@@ -1,6 +1,6 @@
 # CUT&Tag benchmarking and analysis
 
-This repository holds code used to carry out processing, benchmarking and analysis of CUT&Tag against ENCODE ChIP-seq, as shown in our preprint ("CUT&Tag recovers up to half of ENCODE ChIP-seq peaks"; doi: https://doi.org/10.1101/2022.03.30.486382).  
+This repository holds code used to carry out processing, benchmarking and analysis of CUT&Tag against ENCODE ChIP-seq, as shown in our preprint ("CUT&Tag recovers up to half of ENCODE ChIP-seq histone acetylation peaks"; doi: https://doi.org/10.1101/2022.03.30.486382).  
 
 The analysis consists of two main parts:
 1) Pre-processing (adapter trimming, alignment, peak calling, etc.) and a few additional analyses (e.g. heatmap generation) using Linux command line scripts
