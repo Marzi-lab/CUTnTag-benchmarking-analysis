@@ -11,29 +11,29 @@ This demo was carried out on two real samples, Diagenode C15410196 (1:50) and CS
 
 The following command line tools were used:
 
-- Cutadapt (version 3.3)
+- Cutadapt (version 1.18)
 - TrimGalore (version 0.6.6)
 - Bowtie (version 2.2.9)
 - Picard (version 2.6.0)
-- bedtools (version 2.30.0)
-- deeptools (version 3.5.1)
+- bedtools (version 2.25.0)
+- deeptools (version 3.5.4)
 - samtools (version 1.3.1)
 - SEACR (version 1.3)
-- MACS2 (version 2.1.4)
-- HOMER (version 4.10)
+- MACS2 (version 2.2.9.1)
+- HOMER (version 4.11.1)
 
 
 The following R packages were used:
 
-- GenomicRanges (version 1.38.0)
-- IRanges (version 2.30.0)
-- genomation (version 1.18.0)
-- clusterProfiler (version 3.13.4)
-- rtracklayer (version 1.56.0)
-- chromVAR (version 1.8.0)
-- ChIPseeker (version 1.22.1)
-- DiffBind (version 3.0.15)
-- BRGenomics (version 1.1.3)
+- GenomicRanges (version 1.50.2)
+- IRanges (version 2.32.0)
+- genomation (version 1.30.0)
+- clusterProfiler (version 4.6.2)
+- rtracklayer (version 1.58.0)
+- chromVAR (version 1.20.0)
+- ChIPseeker (version 1.34.1)
+- DiffBind (version 3.8.4)
+- BRGenomics (version 1.10.0)
 - marge (version 0.0.4.9999)
 
 Required R packages can also be found in the session information provided in the html file with downstream analysis. Note that this pipeline is now available in the form of the EpiCompare R package (https://github.com/neurogenomics/EpiCompare).
@@ -41,8 +41,8 @@ Required R packages can also be found in the session information provided in the
 
 ### References
 
-CUT&Tag recovers up to half of ENCODE ChIP-seq peaks  
-Di Hu, Leyla Abbasova, Brian M Schilder, Alexi Nott, Nathan G Skene, Sarah J Marzi  
+CUT&Tag recovers up to half of ENCODE ChIP-seq histone acetylation peaks  
+Leyla Abbasova, Paulina Urbanaviciute, Joy N Ismail, Di Hu, Brian M Schilder, Alexi Nott, Nathan G Skene, Sarah J Marzi  
 bioRxiv 2022.03.30.486382; doi: https://doi.org/10.1101/2022.03.30.486382  
   
 EpiCompare: R package for the comparison and quality control of epigenomic peak files (2022)  
