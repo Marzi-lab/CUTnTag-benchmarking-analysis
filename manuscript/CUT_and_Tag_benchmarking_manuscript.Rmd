@@ -47,6 +47,7 @@ library(circlize)
 library(svglite)
 library(preprocessCore)
 library(data.table)
+library(scales)
 
 # set working directory
 storedir="/Volumes/pu1918/projects/neurogenomics-lab/live/Projects/CUT_n_TAG/CUTnTag_analysis"
@@ -121,7 +122,7 @@ alignResult
 # write.csv(alignResult, paste0(workdir,"/alignment/alignment_stats/bowtie_summary.csv"))
 
 # alignResult <- read.csv(paste0(workdir,"/alignment/alignment_stats/bowtie_summary.csv"),row.names=1)
-# alignResult
+# alignResult 
 ```
 
 ## Duplicates
@@ -880,86 +881,86 @@ blacklist_plot
 ### H3K27ac 
 ```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE, fig.width=8, fig.height=8, fig.show="hold"}
 
-info = df # df = only in-house datasets; ext_df = both internal and external
-peakTest = c(ext_peakList, peakList) # peakList = only in-house datasets; ext_peakList = only external datasets
-
-# SEACR H3K27ac peaks {3 antibodies +/- external dataset; rmDup and withDup}
-peakset_l <- info$PeakSet[info$Caller == "SEACR" & info$EpMark == "H3K27ac" & info$Dup == "rmDup"]
-SEACR_rmDup_ac = peakTest[peakset_l]
-peakset_l <- info$PeakSet[info$Caller == "SEACR" & info$EpMark == "H3K27ac" & info$Dup == "withDup"]
-SEACR_withDup_ac = peakTest[peakset_l]
-
-# MACS2 H3K27ac peaks {3 antibodies +/- external dataset; rmDup and withDup}
-peakset_l <- info$PeakSet[info$Caller == "MACS2" & info$EpMark == "H3K27ac" & info$Dup == "rmDup"]
-MACS2_rmDup_ac = peakTest[peakset_l]
-peakset_l <- info$PeakSet[info$Caller == "MACS2" & info$EpMark == "H3K27ac" & info$Dup == "withDup"]
-MACS2_withDup_ac = peakTest[peakset_l]
-
-# SEACR H3K27me3 peaks {1 antibody +/- external dataset; rmDup and withDup}
-peakset_l <- info$PeakSet[df$Caller == "SEACR" & info$EpMark == "H3K27me3" & info$Dup == "rmDup"]
-SEACR_rmDup_me = peakTest[peakset_l]
-peakset_l <- info$PeakSet[info$Caller == "SEACR" & info$EpMark == "H3K27me3" & info$Dup == "withDup"]
-SEACR_withDup_me = peakTest[peakset_l]
-
-# MACS2 H3K27ac peaks {1 antibody +/- external dataset; rmDup and withDup}
-peakset_l <- info$PeakSet[info$Caller == "MACS2" & info$EpMark == "H3K27me3" & info$Dup == "rmDup"]
-MACS2_rmDup_me = peakTest[peakset_l]
-peakset_l <- info$PeakSet[info$Caller == "MACS2" & info$EpMark == "H3K27me3" & info$Dup == "withDup"]
-MACS2_withDup_me = peakTest[peakset_l]
-
- 
-# H3K27ac widths
-SEACR_rmDup_ac_widths = unlist(as(SEACR_rmDup_ac, "GRangesList")) %>% GenomicRanges::width()
-SEACR_withDup_ac_widths = unlist(as(SEACR_withDup_ac, "GRangesList")) %>% GenomicRanges::width()
-MACS2_rmDup_ac_widths = unlist(as(MACS2_rmDup_ac, "GRangesList")) %>% GenomicRanges::width()
-MACS2_withDup_ac_widths = unlist(as(MACS2_withDup_ac, "GRangesList")) %>% GenomicRanges::width()
-# H3K27me3 widths
-SEACR_rmDup_me_widths = unlist(as(SEACR_rmDup_me, "GRangesList")) %>% GenomicRanges::width()
-SEACR_withDup_me_widths = unlist(as(SEACR_withDup_me, "GRangesList")) %>% GenomicRanges::width()
-MACS2_rmDup_me_widths = unlist(as(MACS2_rmDup_me, "GRangesList")) %>% GenomicRanges::width()
-MACS2_withDup_me_widths = unlist(as(MACS2_withDup_me, "GRangesList")) %>% GenomicRanges::width()
-
-
-# plot boxplot for peak widths
-options(scipen=999) # prevent scientififc notation
-
-# H3K27ac
-features <- list(SEACR_rmDup_ac_widths, 
-        SEACR_withDup_ac_widths, 
-        MACS2_rmDup_ac_widths,
-        MACS2_withDup_ac_widths
-)
-names(features) <- c("SEACR_rmDup", 
-        "SEACR_withDup", 
-        "MACS2_rmDup",
-        "MACS2_withDup"
-)
-boxplot(features,
-        outline = TRUE, 
-        names = names(features), 
-        ylab = "Width (bp)", 
-        main = "H3K27ac peak widths", log = "y", ylim = c(1, max(unlist(features))))
+# info = df # df = only in-house datasets; ext_df = both internal and external
+# peakTest = c(ext_peakList, peakList) # peakList = only in-house datasets; ext_peakList = only external datasets
+# 
+# # SEACR H3K27ac peaks {3 antibodies +/- external dataset; rmDup and withDup}
+# peakset_l <- info$PeakSet[info$Caller == "SEACR" & info$EpMark == "H3K27ac" & info$Dup == "rmDup"]
+# SEACR_rmDup_ac = peakTest[peakset_l]
+# peakset_l <- info$PeakSet[info$Caller == "SEACR" & info$EpMark == "H3K27ac" & info$Dup == "withDup"]
+# SEACR_withDup_ac = peakTest[peakset_l]
+# 
+# # MACS2 H3K27ac peaks {3 antibodies +/- external dataset; rmDup and withDup}
+# peakset_l <- info$PeakSet[info$Caller == "MACS2" & info$EpMark == "H3K27ac" & info$Dup == "rmDup"]
+# MACS2_rmDup_ac = peakTest[peakset_l]
+# peakset_l <- info$PeakSet[info$Caller == "MACS2" & info$EpMark == "H3K27ac" & info$Dup == "withDup"]
+# MACS2_withDup_ac = peakTest[peakset_l]
+# 
+# # SEACR H3K27me3 peaks {1 antibody +/- external dataset; rmDup and withDup}
+# peakset_l <- info$PeakSet[df$Caller == "SEACR" & info$EpMark == "H3K27me3" & info$Dup == "rmDup"]
+# SEACR_rmDup_me = peakTest[peakset_l]
+# peakset_l <- info$PeakSet[info$Caller == "SEACR" & info$EpMark == "H3K27me3" & info$Dup == "withDup"]
+# SEACR_withDup_me = peakTest[peakset_l]
+# 
+# # MACS2 H3K27ac peaks {1 antibody +/- external dataset; rmDup and withDup}
+# peakset_l <- info$PeakSet[info$Caller == "MACS2" & info$EpMark == "H3K27me3" & info$Dup == "rmDup"]
+# MACS2_rmDup_me = peakTest[peakset_l]
+# peakset_l <- info$PeakSet[info$Caller == "MACS2" & info$EpMark == "H3K27me3" & info$Dup == "withDup"]
+# MACS2_withDup_me = peakTest[peakset_l]
+# 
+#  
+# # H3K27ac widths
+# SEACR_rmDup_ac_widths = unlist(as(SEACR_rmDup_ac, "GRangesList")) %>% GenomicRanges::width()
+# SEACR_withDup_ac_widths = unlist(as(SEACR_withDup_ac, "GRangesList")) %>% GenomicRanges::width()
+# MACS2_rmDup_ac_widths = unlist(as(MACS2_rmDup_ac, "GRangesList")) %>% GenomicRanges::width()
+# MACS2_withDup_ac_widths = unlist(as(MACS2_withDup_ac, "GRangesList")) %>% GenomicRanges::width()
+# # H3K27me3 widths
+# SEACR_rmDup_me_widths = unlist(as(SEACR_rmDup_me, "GRangesList")) %>% GenomicRanges::width()
+# SEACR_withDup_me_widths = unlist(as(SEACR_withDup_me, "GRangesList")) %>% GenomicRanges::width()
+# MACS2_rmDup_me_widths = unlist(as(MACS2_rmDup_me, "GRangesList")) %>% GenomicRanges::width()
+# MACS2_withDup_me_widths = unlist(as(MACS2_withDup_me, "GRangesList")) %>% GenomicRanges::width()
+# 
+# 
+# # plot boxplot for peak widths
+# options(scipen=999) # prevent scientififc notation
+# 
+# # H3K27ac
+# features <- list(SEACR_rmDup_ac_widths, 
+#         SEACR_withDup_ac_widths, 
+#         MACS2_rmDup_ac_widths,
+#         MACS2_withDup_ac_widths
+# )
+# names(features) <- c("SEACR_rmDup", 
+#         "SEACR_withDup", 
+#         "MACS2_rmDup",
+#         "MACS2_withDup"
+# )
+# boxplot(features,
+#         outline = TRUE, 
+#         names = names(features), 
+#         ylab = "Width (bp)", 
+#         main = "H3K27ac peak widths", log = "y", ylim = c(1, max(unlist(features))))
 # lapply(features, function(x){ median(x) } ) 
 ```
 
 ### H3K27me3
 ```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE, fig.width=8, fig.height=8, fig.show="hold"}
-# H3K27me3
-features <- list(SEACR_rmDup_me_widths, 
-        SEACR_withDup_me_widths, 
-        MACS2_rmDup_me_widths,
-        MACS2_withDup_me_widths
-)
-names(features) <- c("SEACR_rmDup", 
-        "SEACR_withDup", 
-        "MACS2_rmDup",
-        "MACS2_withDup"
-)
-boxplot(features,
-        outline = TRUE, 
-        names = names(features), 
-        ylab = "Width (bp)", 
-        main = "H3K27me3 peak widths", log = "y", ylim = c(1, max(unlist(features))))
+# # H3K27me3
+# features <- list(SEACR_rmDup_me_widths, 
+#         SEACR_withDup_me_widths, 
+#         MACS2_rmDup_me_widths,
+#         MACS2_withDup_me_widths
+# )
+# names(features) <- c("SEACR_rmDup", 
+#         "SEACR_withDup", 
+#         "MACS2_rmDup",
+#         "MACS2_withDup"
+# )
+# boxplot(features,
+#         outline = TRUE, 
+#         names = names(features), 
+#         ylab = "Width (bp)", 
+#         main = "H3K27me3 peak widths", log = "y", ylim = c(1, max(unlist(features))))
 # lapply(features, function(x){ median(x) } ) 
 
 ```
@@ -974,57 +975,57 @@ ENCODE_H3K27me3 = ChIPseeker::readPeakFile(paste0(datadir, "/H3K27me3_ENCFF000BX
 
 ### Summary
 ```{r}
-# add external dataset to peaklist for peak widths)
-peaksTest = c(peakList, ext_peakList)
-
-peakWidth = c()
-for(peak in peaksTest){
-  peakW = GenomicRanges::width(peak) %>% summary() %>% round() %>% list()
-  peakWidth = c(peakWidth, peakW)
-}
-
-# calculate peak width summary stats
-WSummary = c()
-for(i in 1:length(peakWidth)){
-  WSummary = data.frame(Sample = names(peaksTest)[i], MinW = array(peakWidth[[i]][1]), MedianW = array(peakWidth[[i]][3]), MeanW = array(peakWidth[[i]][4]), MaxW = array(peakWidth[[i]][6])) %>% rbind(., WSummary)
-}
-
-WSummary
+# # add external dataset to peaklist for peak widths)
+# peaksTest = c(peakList, ext_peakList)
+# 
+# peakWidth = c()
+# for(peak in peaksTest){
+#   peakW = GenomicRanges::width(peak) %>% summary() %>% round() %>% list()
+#   peakWidth = c(peakWidth, peakW)
+# }
+# 
+# # calculate peak width summary stats
+# WSummary = c()
+# for(i in 1:length(peakWidth)){
+#   WSummary = data.frame(Sample = names(peaksTest)[i], MinW = array(peakWidth[[i]][1]), MedianW = array(peakWidth[[i]][3]), MeanW = array(peakWidth[[i]][4]), MaxW = array(peakWidth[[i]][6])) %>% rbind(., WSummary)
+# }
+# 
+# WSummary
 ```
 
 ### H3K27ac
 ```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE, fig.width=8, fig.height=8, fig.show="hold"}
-# repeat for each sample peak set seperately
-info = ext_df[ext_df$Source != "Supplementary",] # df = only in-house datasets; ext_df = both internal and external
-peakTest = c(ext_peakList, peakList) # peakList = only in-house datasets; ext_peakList = only external datasets
-
-### Loop over all peak sets 
-peakTest = c(ext_peakList, peakList) # peakList = only in-house datasets; ext_peakList = only external datasets
-peakWidths = c()
-for (i in 1:length(peakTest)) {
-  peaks = peakTest[[i]]
-  # name = names(peakTest)[i]
-  widths = unlist(as(peaks, "GRangesList")) %>% GenomicRanges::width()
-  peakWidths = c(peakWidths, list(widths))
-}
-names(peakWidths) <- names(peakTest)
-
-# plot boxplot for peak widths
-options(scipen=999) # prevent scientific notation
-
-# H3K27ac
-peaksets <- info$PeakSet[info$EpMark == "H3K27ac"]
-features <- peakWidths[peaksets]
-par(mar=c(18,5,5,5))
-boxplot(features,
-        outline = TRUE, 
-        names = names(features), 
-        ylab = "Width (bp)", 
-        main = "H3K27ac peak widths", 
-        log = "y", 
-        ylim = c(1, max(unlist(features))),
-        las=2,
-        cex.names=0.2)
+# # repeat for each sample peak set seperately
+# info = ext_df[ext_df$Source != "Supplementary",] # df = only in-house datasets; ext_df = both internal and external
+# peakTest = c(ext_peakList, peakList) # peakList = only in-house datasets; ext_peakList = only external datasets
+# 
+# ### Loop over all peak sets 
+# peakTest = c(ext_peakList, peakList) # peakList = only in-house datasets; ext_peakList = only external datasets
+# peakWidths = c()
+# for (i in 1:length(peakTest)) {
+#   peaks = peakTest[[i]]
+#   # name = names(peakTest)[i]
+#   widths = unlist(as(peaks, "GRangesList")) %>% GenomicRanges::width()
+#   peakWidths = c(peakWidths, list(widths))
+# }
+# names(peakWidths) <- names(peakTest)
+# 
+# # plot boxplot for peak widths
+# options(scipen=999) # prevent scientific notation
+# 
+# # H3K27ac
+# peaksets <- info$PeakSet[info$EpMark == "H3K27ac"]
+# features <- peakWidths[peaksets]
+# par(mar=c(18,5,5,5))
+# boxplot(features,
+#         outline = TRUE, 
+#         names = names(features), 
+#         ylab = "Width (bp)", 
+#         main = "H3K27ac peak widths", 
+#         log = "y", 
+#         ylim = c(1, max(unlist(features))),
+#         las=2,
+#         cex.names=0.2)
 
 ## save
 # # Open a pdf file
@@ -1048,19 +1049,19 @@ boxplot(features,
 
 ### H3K27me3
 ```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE, fig.width=8, fig.height=8, fig.show="hold"}
-# H3K27me3
-peaksets <- info$PeakSet[info$EpMark == "H3K27me3"]
-features <- peakWidths[peaksets]
-par(mar=c(20,5,5,5))
-boxplot(features,
-        outline = TRUE, 
-        names = names(features), 
-        ylab = "Width (bp)", 
-        main = "H3K27me3 peak widths", 
-        log = "y", 
-        ylim = c(1, max(unlist(features))),
-        las=2,
-        cex.names=0.2)
+# # H3K27me3
+# peaksets <- info$PeakSet[info$EpMark == "H3K27me3"]
+# features <- peakWidths[peaksets]
+# par(mar=c(20,5,5,5))
+# boxplot(features,
+#         outline = TRUE, 
+#         names = names(features), 
+#         ylab = "Width (bp)", 
+#         main = "H3K27me3 peak widths", 
+#         log = "y", 
+#         ylim = c(1, max(unlist(features))),
+#         las=2,
+#         cex.names=0.2)
 
 # ## save ##
 # # Open a pdf file
@@ -1084,30 +1085,30 @@ boxplot(features,
 
 ### ENCODE
 ```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE, fig.width=8, fig.height=8, fig.show="hold"}
-# set peak sets of interest
-peakTest = c(ENCODE_H3K27ac=ENCODE_H3K27ac, ENCODE_H3K27me3=ENCODE_H3K27me3) # peakList = only in-house datasets; ext_peakList = only external datasets
-
-### Loop over all peak sets 
-peakWidths = c()
-for (i in 1:length(peakTest)) {
-  peaks = peakTest[[i]]
-  # name = names(peakTest)[i]
-  widths = unlist(as(peaks, "GRangesList")) %>% GenomicRanges::width()
-  peakWidths = c(peakWidths, list(widths))
-}
-names(peakWidths) <- names(peakTest)
-
-features = peakWidths
-par(mar=c(12,5,5,5))
-boxplot(features,
-        outline = TRUE, 
-        names = names(features), 
-        ylab = "Width (bp)", 
-        main = "ENCODE ChIP-seq peak widths", 
-        log = "y", 
-        ylim = c(1, max(unlist(features))),
-        las=2,
-        cex.names=0.2)
+# # set peak sets of interest
+# peakTest = c(ENCODE_H3K27ac=ENCODE_H3K27ac, ENCODE_H3K27me3=ENCODE_H3K27me3) # peakList = only in-house datasets; ext_peakList = only external datasets
+# 
+# ### Loop over all peak sets 
+# peakWidths = c()
+# for (i in 1:length(peakTest)) {
+#   peaks = peakTest[[i]]
+#   # name = names(peakTest)[i]
+#   widths = unlist(as(peaks, "GRangesList")) %>% GenomicRanges::width()
+#   peakWidths = c(peakWidths, list(widths))
+# }
+# names(peakWidths) <- names(peakTest)
+# 
+# features = peakWidths
+# par(mar=c(12,5,5,5))
+# boxplot(features,
+#         outline = TRUE, 
+#         names = names(features), 
+#         ylab = "Width (bp)", 
+#         main = "ENCODE ChIP-seq peak widths", 
+#         log = "y", 
+#         ylim = c(1, max(unlist(features))),
+#         las=2,
+#         cex.names=0.2)
 
 # Pull all median values
 # lapply(features, function(x){ median(x) } ) 
@@ -3901,6 +3902,14 @@ ggplot(encodeOL_restr, aes(x=SampleLabel, y=Proportion, fill=Dup)) +
 #         filename = paste0("precision_recall_curve_supp.svg"),
 #         dpi = 1200, width = 17.0,
 #         height = 12.0, units ="in")
+
+# save data
+savedf = data.frame(Sample=encodeOL_restr$SampleLabel,
+                    Dup=encodeOL_restr$Dup,
+                    ENCODE=encodeOL_restr$Group,
+                    Metric=encodeOL_restr$OLType_Caller,
+                    Proportion=encodeOL_restr$Proportion)
+write.csv(savedf,paste0(workdir,"/encode_overlap/encode_overlap_supplementary.csv"))
 ```
 
 #### Precision/Recall for external samples
@@ -4361,25 +4370,25 @@ igg_encodeOL = encodeOL
 
 ```{r, fig.width=25, fig.height=12}
 
-ggplot(igg_encodeOL, aes(x=OL.prop.of.ENCODE, y=OL.prop.of.CT, colour=SampleLabel, shape=Dup)) +
-  geom_point(size=4, alpha = 0.8) +
-  # scale_size_discrete(range = c(1, 5), name = " ") +
-  theme_bw(base_size = 20) +
-  # scale_colour_viridis(name = "Antibody", label = labs,
-  #                      discrete = TRUE, begin = 0.1, end = 0.85,
-  #                      option = "mako", alpha = 0.9) +
-  ylim(0,1) + xlim(0,1) +
-  ggtitle("Common CUT&Tag and ENCODE ChIP-seq peaks") +
-  ylab("Proportion of all CT") +
-  xlab("Proportion of all ENCODE ChIP") +
-  theme(axis.text = element_text(size = 18)) +
-  theme(axis.title = element_text(size = 18)) +
-  theme(plot.title = element_text(size = 22, face="bold")) +
-  theme(legend.text = element_text(size = 18)) +
-  theme(legend.title = element_text(size = 18)) +
-  theme(legend.position = "right") +
-  theme(legend.key.height = unit(0.7, "cm")) +
-  facet_wrap(Caller~EpMark+Dup, scale="free_x", ncol=4)
+# ggplot(igg_encodeOL, aes(x=OL.prop.of.ENCODE, y=OL.prop.of.CT, colour=SampleLabel, shape=Dup)) +
+#   geom_point(size=4, alpha = 0.8) +
+#   # scale_size_discrete(range = c(1, 5), name = " ") +
+#   theme_bw(base_size = 20) +
+#   # scale_colour_viridis(name = "Antibody", label = labs,
+#   #                      discrete = TRUE, begin = 0.1, end = 0.85,
+#   #                      option = "mako", alpha = 0.9) +
+#   ylim(0,1) + xlim(0,1) +
+#   ggtitle("Common CUT&Tag and ENCODE ChIP-seq peaks") +
+#   ylab("Proportion of all CT") +
+#   xlab("Proportion of all ENCODE ChIP") +
+#   theme(axis.text = element_text(size = 18)) +
+#   theme(axis.title = element_text(size = 18)) +
+#   theme(plot.title = element_text(size = 22, face="bold")) +
+#   theme(legend.text = element_text(size = 18)) +
+#   theme(legend.title = element_text(size = 18)) +
+#   theme(legend.position = "right") +
+#   theme(legend.key.height = unit(0.7, "cm")) +
+#   facet_wrap(Caller~EpMark+Dup, scale="free_x", ncol=4)
 
 ```
 
@@ -4424,6 +4433,14 @@ ggplot(encodeOL_restr, aes(x=SampleLabel, y=Proportion, fill=control)) +
 #         filename = paste0("precision_recall_igg_control.svg"),
 #         dpi = 1200, width = 16.0,
 #         height = 10.0, units ="in")
+
+# save data 
+savedf = data.frame(Sample=encodeOL_restr$SampleLabel,
+                    duplicates=encodeOL_restr$Dup,
+                    Control=encodeOL_restr$control,
+                    Metric=encodeOL_restr$OLType,
+                    Proportion=encodeOL_restr$Proportion)
+write.csv(savedf, paste0(workdir,"/encode_overlap/precision_recall_igg_control.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 
@@ -4657,6 +4674,14 @@ p1
 #         height = 6.0, units ="in",
 #         plot=p1)
 
+# save data 
+savedf = data.frame(Sample=plotdata$SampleLabel,
+                    PeakSource=plotdata$Caller,
+                    Parameter="Q-value;lambda",
+                    Threshold=plotdata$Threshold,
+                    PercentCTPeaksOverlap_Precision=plotdata$OL.prop.of.CT,
+                    PercentENCODEPeaksOverlap_Recall=plotdata$OL.prop.of.ENCODE)
+write.csv(savedf, paste0(workdir,"/encode_overlap/precision_recall_curve_MACS2_Qval_lambda_",callername,"_",dupname,".csv"), quote=TRUE,row.names=FALSE)
 ```
 
 
@@ -4890,6 +4915,14 @@ p1
 #         height = 6.0, units ="in",
 #         plot=p1)
 
+# save data 
+savedf = data.frame(Sample=plotdata$SampleLabel,
+                    PeakSource=plotdata$Caller,
+                    Parameter="P-value;nolambda",
+                    Threshold=plotdata$Threshold,
+                    PercentCTPeaksOverlap_Precision=plotdata$OL.prop.of.CT,
+                    PercentENCODEPeaksOverlap_Recall=plotdata$OL.prop.of.ENCODE)
+write.csv(savedf, paste0(workdir,"/encode_overlap/precision_recall_curve_MACS2_Pval_nolambda_",callername,"_",dupname,".csv"), quote=TRUE,row.names=FALSE)
 ```
 
 
@@ -5120,6 +5153,14 @@ p1
 #         height = 6.0, units ="in",
 #         plot=p1)
 
+# save data 
+savedf = data.frame(Sample=plotdata$SampleLabel,
+                    PeakSource=plotdata$Caller,
+                    Parameter="P-value;lambda",
+                    Threshold=plotdata$Threshold,
+                    PercentCTPeaksOverlap_Precision=plotdata$OL.prop.of.CT,
+                    PercentENCODEPeaksOverlap_Recall=plotdata$OL.prop.of.ENCODE)
+write.csv(savedf, paste0(workdir,"/encode_overlap/precision_recall_curve_MACS2_Pval_lambda_",callername,"_",dupname,".csv"), quote=TRUE,row.names=FALSE)
 ```
 
 # Precision and Recall for SEACR relaxed {.tabset}
@@ -5350,6 +5391,14 @@ p1
 #         height = 6.0, units ="in",
 #         plot=p1)
 
+# save data 
+savedf = data.frame(Sample=plotdata$SampleLabel,
+                    PeakSource=plotdata$Caller,
+                    Parameter="TopProp;relaxed",
+                    Threshold=plotdata$Threshold,
+                    PercentCTPeaksOverlap_Precision=plotdata$OL.prop.of.CT,
+                    PercentENCODEPeaksOverlap_Recall=plotdata$OL.prop.of.ENCODE)
+write.csv(savedf, paste0(workdir,"/encode_overlap/precision_recall_curve_SEACR_relaxed_",callername,"_",dupname,".csv"), quote=TRUE,row.names=FALSE)
 ```
 
 # Precision and Recall for MACS2 merged samples {.tabset}
@@ -5590,6 +5639,14 @@ p1
 #         height = 5.5, units ="in",
 #         plot=p1)
 
+# save data
+savedf = data.frame(PeakSource=plotdata$Caller,
+                    EpMark=plotdata$EpMark,
+                    Duplicates=plotdata$Dup,
+                    Threshold=plotdata$Threshold,
+                    Precision_Overlap.percent.of.CT=plotdata$OL.prop.of.CT,
+                    Recall_Overlap.percent.of.ENCODE=plotdata$OL.prop.of.ENCODE)
+write.csv(savedf, paste0(workdir,"/encode_overlap/precision_recall_curve_allmerged_",callername,".csv"), quote=FALSE,row.names=FALSE)
 ```
 
 ## F1 Score
@@ -5635,6 +5692,7 @@ p1
 #         dpi = 1200, width = 7.5,
 #         height = 6.0, units ="in",
 #         plot=p1)
+
 ```
 
 
@@ -5869,6 +5927,15 @@ p1
 #         height = 5.5, units ="in",
 #         plot=p1)
 
+# save data
+savedf = data.frame(PeakSource=plotdata$Caller,
+                    EpMark=plotdata$EpMark,
+                    Duplicates=plotdata$Dup,
+                    Threshold=plotdata$Threshold,
+                    NumMergedSamples=2,
+                    Precision_Overlap.percent.of.CT=plotdata$OL.prop.of.CT,
+                    Recall_Overlap.percent.of.ENCODE=plotdata$OL.prop.of.ENCODE)
+write.csv(savedf, paste0(workdir,"/encode_overlap/precision_recall_curve_antibodyreps_",callername,".csv"), quote=FALSE,row.names=FALSE)
 ```
 
 ## F1 Score
@@ -6152,6 +6219,15 @@ p1
 #         height = 5.5, units ="in",
 #         plot=p1)
 
+# save data
+savedf = data.frame(PeakSource=plotdata$Caller,
+                    EpMark=plotdata$EpMark,
+                    Duplicates=plotdata$Dup,
+                    Threshold=plotdata$Threshold,
+                    NumMergedSamples=6,
+                    Precision_Overlap.percent.of.CT=plotdata$OL.prop.of.CT,
+                    Recall_Overlap.percent.of.ENCODE=plotdata$OL.prop.of.ENCODE)
+write.csv(savedf, paste0(workdir,"/encode_overlap/precision_recall_curve_allmerge_",callername,".csv"), quote=FALSE,row.names=FALSE)
 ```
 
 ## F1 Score
@@ -6431,6 +6507,15 @@ p1
 #         height = 5.5, units ="in",
 #         plot=p1)
 
+# save data
+savedf = data.frame(PeakSource=plotdata$Caller,
+                    EpMark=plotdata$EpMark,
+                    Duplicates=plotdata$Dup,
+                    Threshold=plotdata$Threshold,
+                    NumMergedSamples=2,
+                    Precision_Overlap.percent.of.CT=plotdata$OL.prop.of.CT,
+                    Recall_Overlap.percent.of.ENCODE=plotdata$OL.prop.of.ENCODE)
+write.csv(savedf, paste0(workdir,"/encode_overlap/precision_recall_curve_antibodyreps_",callername,".csv"), quote=FALSE,row.names=FALSE)
 ```
 
 
@@ -6704,6 +6789,8 @@ p1
 #         dpi = 1200, width = 8.5,
 #         height = 5.0, units ="in",
 #         plot=p1)
+
+
 ```
 
 
@@ -6771,6 +6858,42 @@ ggplot(collectdf, aes(x=Threshold, y=SampleLabel, fill=f1score)) +
 #         filename = paste0("f1scores_H3K27ac_merged_sample.svg"),
 #         dpi = 1200, width = 10.0,
 #         height = 9.0, units ="in")
+
+# save data
+savedf = data.frame(Sample=collectdf$SampleLabel,
+                    Duplicates=collectdf$Dup,
+                    Threshold=collectdf$Threshold,
+                    F1score=collectdf$f1score)
+write.csv(savedf, paste0(workdir,"/encode_overlap/f1scores_H3K27ac_merged_sample.csv"), quote=TRUE,row.names=FALSE)
+```
+
+
+# MACS-SEACR overlap
+```{r}
+# select H3K27ac sample peaks (MACS2 q-val 1e-5 nomodel nolambda; SEACR 0.01 stringent)
+macssets = org_df[org_df$EpMark == "H3K27ac" & org_df$Dup == "rmDup" & org_df$Caller == "MACS2","PeakSet"]
+seacrsets = org_df[org_df$EpMark == "H3K27ac" & org_df$Dup == "rmDup" & org_df$Caller == "SEACR","PeakSet"]
+
+df <- c()
+for (i in 1:length(macssets)) {
+  macspeak = macssets[i]
+  seacrpeak = seacrsets[i]
+  macsranges = peakList[[macspeak]]
+  seacrranges =  peakList[[seacrpeak]]
+  ol = findOverlaps(seacrranges, macsranges) # query, subject
+  seacrcount = queryHits(ol) %>% table %>% data.frame
+  avg = mean(seacrcount$Freq)
+  sd = sd(seacrcount$Freq)
+  
+  sample = str_split(macspeak,"_")[[1]][1]
+  df = data.frame(Sample=sample, avg.macspeaks.in.seacr = avg, sd = sd) %>% rbind(.,df)
+}
+
+df$avg.macspeaks.in.seacr %>% mean()
+df$avg.macspeaks.in.seacr %>% sd()
+df$avg.macspeaks.in.seacr %>% range()
+
+merge(df,org_df,by="Sample")
 ```
 
 # Read correlation
@@ -6836,6 +6959,10 @@ heatmap.2(x = counts_rounded, col = "plasma", trace = "none", density.info = "no
 # col = col = colorRampPalette(brewer.pal(9, "BuPu"))(100)
 # col2 = c(col, col)
 #heatmap.2(x = counts, col = "viridis", trace = "none", density.info = "none", cellnote = counts, cexRow = 1, cexCol = 1, notecex = 1, notecol = "black", lhei = c(1, 10), lwid = c(1, 7), margins = c(20, 20))
+
+# save data 
+counts_df <- as.data.frame(counts_rounded)
+write.csv(counts_df, paste0(workdir,"/correlation/heatmap_hg19bin_correlation.csv"), row.names = TRUE)
 ```
 
 ## H3K27ac ENCODE ranges
@@ -6889,6 +7016,10 @@ heatmap.2(x = counts_rounded, col = "plasma", trace = "none", density.info = "no
 #           lhei = c(1, 5), lwid = c(1, 4), margins = c(15,15),
 #           ColSideColors = ColColors)
 # dev.off()
+
+# save data 
+counts_df <- as.data.frame(counts_rounded)
+write.csv(counts_df, paste0(workdir,"/correlation/heatmap_encodeh3k27ac_correlation.csv"), row.names = TRUE)
 ```
 
 ## H3K27ac ENCODE ranges (main figure)
@@ -6944,6 +7075,10 @@ heatmap.2(x = counts_rounded, col = "plasma", trace = "none", density.info = "no
 #           lhei = c(1, 3.5), lwid = c(1, 3.5), margins = c(12,12),
 #           ColSideColors = ColColors)
 # dev.off()
+
+# save data 
+counts_df <- as.data.frame(counts_rounded)
+write.csv(counts_df, paste0(workdir,"/correlation/heatmap_encodeh3k27ac_correlation.mainfig.csv"), row.names = TRUE)
 ```
 
 ## H3K27me3 ENCODE ranges
@@ -6994,6 +7129,10 @@ heatmap.2(x = counts_rounded, col = "plasma", trace = "none", density.info = "no
 #           lhei = c(1, 5), lwid = c(1, 4), margins = c(15,15),
 #           ColSideColors = ColColors)
 # dev.off()
+
+# save data 
+counts_df <- as.data.frame(counts_rounded)
+write.csv(counts_df, paste0(workdir,"/correlation/heatmap_encodeh3kme3_correlation.csv"), row.names = TRUE)
 ```
 
 
@@ -7089,6 +7228,12 @@ DiffBind::dba.plotHeatmap(DBA_mixed, lhei = c(1,5), lwid = c(1,5), keysize = 0.7
 #                            colSideCols = c("orange2","yellow","grey" ),
 #                            ColAttributes=DBA_CALLER)
 # dev.off()
+
+# save correlation data 
+cor_matrix <- DiffBind::dba.plotHeatmap(DBA_mixed, correlations=TRUE)
+cor_df <- as.data.frame(cor_matrix)
+write.csv(cor_df, paste0(workdir,"/correlation/heatmap_allpeak_correlation.csv"), row.names = TRUE)
+
 ```
 
 ## SEACR
@@ -7203,8 +7348,15 @@ dba.plotPCA(DBA_H3K27ac_test, attributes=c(DBA_ID))
 
 ### H3K27ac
 ```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE, fig.width=11, fig.height=11}
-DiffBind::dba.plotHeatmap(DBA_H3K27ac, lhei = c(1,5), lwid = c(1,5), keysize = 0.75, cexRow = 1.25, cexCol = 1.25, margin = 40, colScheme="BuPu")
-
+DiffBind::dba.plotHeatmap(DBA_H3K27ac, lhei = c(1,5), lwid = c(1,5), 
+                          keysize = 0.75, 
+                          cexRow = 1.25, 
+                          cexCol = 1.25, 
+                          margin = 40, 
+                          colScheme="BuPu" ,
+                          colSideCols = c("orange2","yellow","grey" ),
+                          ColAttributes=DBA_CALLER
+                          )
 # svglite(paste0(workdir,"/correlation/heatmap_h3k27ac_correlation.svg"), width = 10, height = 10)
 # 
 # DiffBind::dba.plotHeatmap(DBA_H3K27ac, lhei = c(1,5), lwid = c(1,5), 
@@ -7218,6 +7370,11 @@ DiffBind::dba.plotHeatmap(DBA_H3K27ac, lhei = c(1,5), lwid = c(1,5), keysize = 0
 #                           )
 # 
 # dev.off()
+
+# save correlation data 
+cor_matrix <- DiffBind::dba.plotHeatmap(DBA_H3K27ac, correlations=TRUE)
+cor_df <- as.data.frame(cor_matrix)
+write.csv(cor_df, paste0(workdir,"/correlation/heatmap_h3k27ac_correlation.csv"), row.names = TRUE)
 ```
 
 ### H3K27me3
@@ -7508,14 +7665,14 @@ frip_plot = ggplot(plotdata, aes(Count, avg.frip, fill=Ab)) +
   ylim(0, 50) +
   ylab("% fragments") +
   xlab("Read depth (millions)") +
-  ggtitle("Downsampled Fragments in H3K27ac Peaks") +
+  ggtitle("Downsampled Fragments\nin H3K27ac Peaks") +
   theme(axis.text = element_text(size = 18)) +
   theme(axis.title = element_text(size = 20)) +
-  theme(plot.title = element_text(size = 25, face="bold")) +
+  theme(plot.title = element_text(size = 25, face="bold",hjust=0.5)) +
   theme(legend.text = element_text(size = 18)) +
   theme(legend.title = element_text(size = 18)) +
-  theme(legend.position = "right") +
-  scale_fill_viridis(name="", discrete = TRUE, begin = 0.1, end = 0.7, option = "magma", alpha = 0.55)
+  theme(legend.position = "top") +
+  scale_fill_viridis(name="", discrete = TRUE, begin = 0.1, end = 0.8, option = "magma", alpha = 0.65)
 
 frip_plot
 
@@ -7525,6 +7682,15 @@ frip_plot
 #         dpi = 1200, width = 12.0,
 #         height = 7.0, units ="in",
 #         plot=frip_plot)
+
+# save data
+savedf = data.frame(Sample=plotdata$SampleLabel,
+                    Group=plotdata$Ab,
+                    ReadDepth_Millions=plotdata$Count,
+                    FRiP=plotdata$frip,
+                    Average_Group=plotdata$avg.frip,
+                    SD_Group=plotdata$sd)
+write.csv(savedf, paste0(workdir,"/alignment/frip/barplot_frip_score.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 # Functional enrichments
@@ -7554,6 +7720,14 @@ annobar
 #         filename = "ChIPseeker_annotation_barplot_SEACR_rmDup.svg",
 #         dpi = 1200, width = 7.0,
 #         height = 4.0, units ="in")
+
+# save data
+anno_data <- annobar$data
+savedf = data.frame(Sample=anno_data$.id,
+                    Feature=anno_data$Feature,
+                    Frequency=anno_data$Frequency,
+                    PeakSource="SEACR")
+write.csv(savedf, paste0(workdir,"/functional/ChIPseeker_annotation_barplot_SEACR_rmDup.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 ### MACS2
@@ -7582,6 +7756,14 @@ annobar
 #         filename = "ChIPseeker_annotation_barplot_MACS2_rmDup.svg",
 #         dpi = 1200, width = 7.0,
 #         height = 4.0, units ="in")
+
+# save data
+anno_data <- annobar$data
+savedf = data.frame(Sample=anno_data$.id,
+                    Feature=anno_data$Feature,
+                    Frequency=anno_data$Frequency,
+                    PeakSource="MACS2")
+write.csv(savedf, paste0(workdir,"/functional/ChIPseeker_annotation_barplot_MACS2_rmDup.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 ## ChromHMM
@@ -7641,6 +7823,13 @@ ggplot(matrix_melt) +
 #         filename = "ChromHMM_annotation_heatmap_SEACR_rmDup.svg",
 #         dpi = 1200, width = 8.0,
 #         height = 6, units ="in")
+
+# save data
+savedf = data.frame(Sample=matrix_melt$Sample,
+                    State=matrix_melt$State,
+                    PercentPeaks=matrix_melt$'% Peaks',
+                    PeakSource="SEACR")
+write.csv(savedf, paste0(workdir,"/functional/ChromHMM_annotation_heatmap_SEACR_rmDup.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 ### MACS2
@@ -7697,6 +7886,13 @@ ggplot(matrix_melt) +
 #         filename = "ChromHMM_annotation_heatmap_MACS2_rmDup.svg",
 #         dpi = 1200, width = 8.0,
 #         height = 6, units ="in")
+
+# save data
+savedf = data.frame(Sample=matrix_melt$Sample,
+                    State=matrix_melt$State,
+                    PercentPeaks=matrix_melt$'% Peaks',
+                    PeakSource="MACS2")
+write.csv(savedf, paste0(workdir,"/functional/ChromHMM_annotation_heatmap_MACS2_rmDup.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 
@@ -7766,6 +7962,11 @@ ggplot(matrix_melt) +
 #         dpi = 1200, width = 15.0,
 #         height = 6, units ="in")
 
+# save data
+savedf = data.frame(PeakSet=matrix_melt$Sample,
+                    State=matrix_melt$State,
+                    PercentPeaks=matrix_melt$value)
+write.csv(savedf, paste0(workdir,"/functional/ChromHMM_annotation_heatmap_dupOnly_supp.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 ### Duplicate-only peaks, MACS2 only
@@ -7801,6 +8002,13 @@ ggplot(matrix_MACS2_melt) +
 #         filename = "ChromHMM_annotation_heatmap_macs2_dupOnly_supp.svg",
 #         dpi = 1200, width = 10,
 #         height = 6, units ="in")
+
+# save data
+savedf = data.frame(PeakSet=matrix_MACS2_melt$Sample,
+                    State=matrix_MACS2_melt$State,
+                    PercentPeaks=matrix_MACS2_melt$value,
+                    PeakSource="MACS2")
+write.csv(savedf, paste0(workdir,"/functional/ChromHMM_annotation_heatmap_macs2_dupOnly_supp.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 ### Duplicate-only peaks, SEACR only
@@ -7835,6 +8043,13 @@ ggplot(matrix_SEACR_melt) +
 #         filename = "ChromHMM_annotation_heatmap_seacr_dupOnly_supp.svg",
 #         dpi = 1200, width = 10,
 #         height = 6, units ="in")
+
+# save data
+savedf = data.frame(PeakSet=matrix_SEACR_melt$Sample,
+                    State=matrix_SEACR_melt$State,
+                    PercentPeaks=matrix_SEACR_melt$value,
+                    PeakSource="SEACR")
+write.csv(savedf, paste0(workdir,"/functional/ChromHMM_annotation_heatmap_seacr_dupOnly_supp.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 ### C&T peaks not in ENCODE H3K27ac, SEACR
@@ -7900,6 +8115,13 @@ ggplot(matrix_melt) +
 #         filename = "ChromHMM_annotation_heatmap_seacr_notencode_supp.svg",
 #         dpi = 1200, width = 17,
 #         height = 6, units ="in")
+
+# save data
+savedf = data.frame(PeakSet=matrix_melt$SampleLabel,
+                    State=matrix_melt$State,
+                    PercentPeaks=matrix_melt$value,
+                    PeakSource="SEACR")
+write.csv(savedf, paste0(workdir,"/functional/ChromHMM_annotation_heatmap_seacr_notencode_supp.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 ### C&T peaks not in ENCODE H3K27ac, MACS2
@@ -7942,6 +8164,13 @@ ggplot(matrix_melt) +
 #         filename = "ChromHMM_annotation_heatmap_macs2_notencode_supp.svg",
 #         dpi = 1200, width = 17,
 #         height = 6, units ="in")
+
+# save data
+savedf = data.frame(PeakSet=matrix_melt$SampleLabel,
+                    State=matrix_melt$State,
+                    PercentPeaks=matrix_melt$value,
+                    PeakSource="MACS2")
+write.csv(savedf, paste0(workdir,"/functional/ChromHMM_annotation_heatmap_macs2_notencode_supp.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 ### C&T peaks in ENCODE H3K27ac
@@ -8122,6 +8351,20 @@ clusterProfiler::dotplot(compGO, showCategory = 15) +
 #         dpi = 1200, width = 23.0,
 #         height = 50.0, units ="in",
 #        limitsize = FALSE)
+
+# save data
+# Generate the dotplot (returns a ggplot object)
+p <- clusterProfiler::dotplot(compGO, showCategory = 15)
+# Extract the data from the ggplot object
+go_df <- p$data
+savedf = data.frame(PeakSet=gsub("\n"," ",go_df$Cluster),
+                    ID=go_df$ID,
+                    Description=go_df$Description,
+                    GeneRatio=go_df$GeneRatio,
+                    neg_log10_p.adjust_=-log10(go_df$p.adjust),
+                    PeakSource="SEACR")
+write.csv(savedf, paste0(workdir,"/functional/clusterProfiler_GO_annotation_dotplot_SEACR_rmDup.csv"), quote=TRUE,row.names=FALSE)
+
 ```
 ### MACS2
 ```{r, fig.width=32, fig.height=50, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
@@ -8175,6 +8418,19 @@ clusterProfiler::dotplot(compGO, showCategory = 15) +
 #         dpi = 1200, width = 23.0,
 #         height = 50.0, units ="in",
 #        limitsize = FALSE)
+
+# save data
+# Generate the dotplot (returns a ggplot object)
+p <- clusterProfiler::dotplot(compGO, showCategory = 15)
+# Extract the data from the ggplot object
+go_df <- p$data
+savedf = data.frame(PeakSet=gsub("\n"," ",go_df$Cluster),
+                    ID=go_df$ID,
+                    Description=go_df$Description,
+                    GeneRatio=go_df$GeneRatio,
+                    neg_log10_p.adjust_=-log10(go_df$p.adjust),
+                    PeakSource="MACS2")
+write.csv(savedf, paste0(workdir,"/functional/clusterProfiler_GO_annotation_dotplot_MACS2_rmDup.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 
@@ -8230,6 +8486,7 @@ promoter_overlaps$Percentage_of_CT_in_promoters = promoter_overlaps$CT_in_promot
 promoter_overlaps$Percentage_of_promoters_captured = promoter_overlaps$Promoters_in_CT / length(promoters) * 100
 promoter_overlaps
 ```
+
 ```{r, fig.height=5, fig.width=9, warning=FALSE}
 # filter out peaks called with duplicates. There are no differences between duplicate inclusion and exclusion.
 dupSample = grep("withDup",promoter_overlaps$Sample,value = TRUE)
@@ -8287,6 +8544,9 @@ CT_in_promoters_plot
 #          filename = paste0("sample_peaks_in_promoters_barplot.svg"),
 #         dpi = 1200, width = 7.5,
 #         height = 5.0, units ="in")
+
+# save data
+write.csv(CT_in_promoters_summary_melt, paste0(workdir,"/functional/sample_peaks_in_promoters_barplot.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 ```{r, fig.height=5, fig.width=9, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
@@ -8328,6 +8588,9 @@ Promoters_in_CT_plot
 #          filename = paste0("captured_promoters_barplot.svg"),
 #         dpi = 1200, width = 7.5,
 #         height = 5.0, units ="in")
+
+# save data
+write.csv(promoter_overlaps_summary_melt, paste0(workdir,"/functional/captured_promoters_barplot.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 
@@ -8395,6 +8658,13 @@ ggplot(plotdata, aes(SampleLabel, Average, fill = caller)) +
 #          filename = paste0("sample_peaks_per_promoter_barplot.svg"),
 #         dpi = 1200, width = 7.5,
 #         height = 5.0, units ="in")
+
+# save data
+savedf = data.frame(Sample=plotdata$SampleLabel,
+                    PeakSource=plotdata$caller,
+                    Average=plotdata$Average,
+                    SD=plotdata$SD)
+write.csv(savedf, paste0(workdir,"/functional/sample_peaks_per_promoter_barplot.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 
@@ -8665,6 +8935,13 @@ ggplot(plotdata, aes(x = value, y = label, fill = Captured)) +
 #        filename = paste0("starrseq_overlap_allpeaks_DNasefilt_significance.svg"),
 #         dpi = 1200, width = 6.0,
 #         height = 8.0, units ="in")
+
+# save data
+savedf = data.frame(PeakSet=plotdata$SampleLabel, 
+                    Capture=plotdata$Captured, 
+                    neg_log10_qval=plotdata$value,
+                    condition="allpeaks")
+write.csv(savedf, paste0(workdir,"/functional/starrseq_overlap_allpeaks_DNasefilt_significance.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 #### Welch Two Sample t-test
@@ -8889,6 +9166,14 @@ ggplot(plotdata, aes(y = label, x = value, fill = caller)) +
 #         filename = paste0("starrseq_overlap_allpeaks.svg"),
 #         dpi = 1200, width = 5.5,
 #         height = 10.0, units ="in")
+
+# save data
+savedf = data.frame(PeakSet=plotdata$SampleLabel, 
+                    PeakSource=plotdata$caller, 
+                    group=plotdata$group, 
+                    correction=plotdata$variable,
+                    condition="allpeaks")
+write.csv(savedf, paste0(workdir,"/functional/starrseq_capture_allpeaks_DNasefilt.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 
@@ -9134,6 +9419,13 @@ ggplot(plotdata, aes(x = value, y = label, fill = Captured)) +
 #        filename = paste0("starrseq_overlap_allpeaks_DNasefilt_significance.svg"),
 #         dpi = 1200, width = 6.0,
 #         height = 8.0, units ="in")
+
+# save data
+savedf = data.frame(PeakSet=plotdata$SampleLabel, 
+                    Capture=plotdata$Captured, 
+                    neg_log10_qval=plotdata$value,
+                    condition="promoteroverlap")
+write.csv(savedf, paste0(workdir,"/functional/starrseq_overlap_promoteroverlappeaks_DNasefilt_significance.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 #### Welch Two Sample t-test
@@ -9301,6 +9593,14 @@ ggplot(plotdata, aes(y = label, x = value, fill = caller)) +
   guides(fill = guide_legend(nrow = 1, reverse = FALSE)) +
   theme(text = element_text(size = 12)) +
   facet_grid(variable+Modification~group, scale="free", space="free_y")
+
+# save data
+savedf = data.frame(PeakSet=plotdata$SampleLabel, 
+                    PeakSource=plotdata$caller, 
+                    group=plotdata$group, 
+                    correction=plotdata$variable,
+                    condition="promoter_overlap")
+write.csv(savedf, paste0(workdir,"/functional/starrseq_capture_promoteroverlappeaks_DNasefilt.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 
@@ -9546,6 +9846,13 @@ ggplot(plotdata, aes(x = value, y = label, fill = Captured)) +
 #        filename = paste0("starrseq_overlap_allpeaks_DNasefilt_significance.svg"),
 #         dpi = 1200, width = 6.0,
 #         height = 8.0, units ="in")
+
+# save data
+savedf = data.frame(PeakSet=plotdata$SampleLabel, 
+                    Capture=plotdata$Captured, 
+                    neg_log10_qval=plotdata$value,
+                    condition="no_promoter_overlap")
+write.csv(savedf, paste0(workdir,"/functional/starrseq_overlap_nopromoteroverlappeaks_DNasefilt_significance.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 #### Welch Two Sample t-test
@@ -9715,6 +10022,14 @@ ggplot(plotdata, aes(y = label, x = value, fill = caller)) +
   guides(fill = guide_legend(nrow = 1, reverse = FALSE)) +
   theme(text = element_text(size = 12)) +
   facet_grid(variable+Modification~group, scale="free", space="free_y")
+
+# save data
+savedf = data.frame(PeakSet=plotdata$SampleLabel, 
+                    PeakSource=plotdata$caller, 
+                    group=plotdata$group, 
+                    correction=plotdata$variable,
+                    condition="no_promoter_overlap")
+write.csv(savedf, paste0(workdir,"/functional/starrseq_capture_nopromoteroverlappeaks_DNasefilt.csv"), quote=TRUE,row.names=FALSE)
 ```
 
 
@@ -9732,9 +10047,9 @@ hg19_blacklist = ChIPseeker::readPeakFile(paste0(workdir,"/resources/hg19/hg19-b
 # peak list directory
 peakpath="/Volumes/pu1918/projects/neurogenomics-lab/live/Projects/CUT_n_TAG/CUTnTag_analysis/TSA/peakCalling"
 
-setList=c("TSA","sub") # opts: allsample, newsample, individual, 8M, TSA, sub
-# callerdir=c("SEACR","MACS2")
-callerdir=c("MACS2")
+setList=c("TSA","noTSA") # opts: allsample, newsample, individual, 8M, TSA, noTSA
+callerdir=c("SEACR","MACS2")
+# callerdir=c("MACS2")
 dupList="rmDup"
 threshold_list = list(SEACR = c("0.01"), MACS2 = c("0.00001"))
 
@@ -9747,8 +10062,8 @@ for (set in setList) {
   for (dup in dupList) {
     for (sample in sampleList) {
       # for MACS2, define narrow or broad peak setting
-      if (sample %in% h3k27me3_sampleList) { setting = "broad"
-                                            epmark = "H3K27me3"} 
+      # if (sample %in% h3k27me3_sampleList) { setting = "broad"
+                                            # epmark = "H3K27me3"} 
       if (sample %in% h3k27ac_sampleList) { setting = "narrow"
                                             epmark = "H3K27ac"} 
     
@@ -9760,9 +10075,12 @@ for (set in setList) {
           # for peak caller, define the peak file name suffix
           if (caller == "SEACR") { suffix=paste0("seacr_top",threshold,"_peaks.stringent.bed") }
           if (caller == "MACS2") { suffix=paste0("q",threshold,"_peaks.",setting,"Peak") }
-          # check
-            peakfile=paste0(peakpath,"/",caller,"/", sample,"_",set,"_", suffix)
-            # print(peakfile)
+            
+            # check
+            peakfile=paste0(peakpath,"/",caller,
+                            "/subv2/", # edit: location for new downsampling
+                            sample,"_", set,"_", suffix)
+            print(peakfile)
           
           # read in peak regions
           peak_unfilt = ChIPseeker::readPeakFile(peakfile, as = "GRanges")
@@ -9803,7 +10121,7 @@ names(Total_CT_peaks) <- par_callInfo
 data.frame(Total_CT_peaks)
 ```
 
-```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE, fig.width=12, fig.height=10}
+```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE, fig.width=12, fig.height=7}
 # split peak set information and plot bar plot
 par_df=data.frame(Total_CT_peaks)
 par_df$PeakSet = rownames(par_df)
@@ -9813,16 +10131,22 @@ par_df$Sample <- str_extract(par_df$PeakSet, c("Abcam-ab4729|Abcam-ab177178|Diag
 par_df$SampleLabel <- par_df$Sample 
 par_df$Caller <- str_extract(par_df$PeakSet, "MACS2|SEACR")
 # par_df$Dup <- str_split_fixed(par_df$PeakSet, "_", n=5)[,4]
-par_df$Set <- str_extract(par_df$PeakSet, "TSA|sub")
+par_df$Set <- str_extract(par_df$PeakSet, "TSA|noTSA")
 par_df$Threshold <- 0.00001
 
 options(scipen=999)
 par_df$Threshold <- par_df$Threshold %>% as.numeric() %>% as.factor
 
+# rename
+par_df$Set[par_df$Set == "TSA"] <- "+ TSA"
+par_df$Set[par_df$Set == "noTSA"] <- "- TSA"
+
 ggplot(par_df, aes(x=Sample, y=Total_CT_peaks, fill=Set)) +
   geom_bar(aes(fill = Set), width = 0.7, position = position_dodge(width = 0.75), 
-           stat = "identity", alpha = 0.6, colour="black") +
-  scale_fill_manual(name=NULL, values = c("violet","purple4")) +
+           stat = "identity") +
+  scale_fill_viridis(name = "Peak Caller",
+                       discrete = TRUE, begin = 0.65, end = 0.9,
+                       option = "plasma", alpha = 0.85) +
   theme_bw(base_size=30) + 
   ylab("Total peaks") +
   xlab("") +
@@ -9836,19 +10160,27 @@ ggplot(par_df, aes(x=Sample, y=Total_CT_peaks, fill=Set)) +
   theme(legend.text = element_text(size = 25)) +
   theme(legend.title = element_blank()) +
   theme(legend.position = "right") +
-  theme(strip.background =element_rect(fill="grey60"))+
+  theme(strip.background =element_rect(fill="grey80"))+
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
   scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +
-  ylim(0, max(par_df$Total_CT_peaks)+1000) 
+  ylim(0, max(par_df$Total_CT_peaks)+1000) +
+  facet_wrap(~Caller)
 
 # save plot
-# ggsave(path = paste0(workdir,"/TSA"),
-#         filename = paste0("peakcounts_MACS2.svg"),
-#         dpi = 1200, width = 8.0,
-#         height = 7.0, units ="in")
+ggsave(path = paste0(workdir,"/TSA"),
+        filename = paste0("peakcounts.svg"),
+        dpi = 1200, width = 10.0,
+        height = 6.5, units ="in")
 ```
 
 ## Precision-Recall 
+```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+# load ENCODE ChIP peaks
+datadir="/Volumes/pu1918/projects/neurogenomics-lab/live/Projects/CUTnTag-benchmarking-analysis/resources/ENCODE/peaks/"
+ENCODE_H3K27ac = ChIPseeker::readPeakFile(paste0(datadir, "/H3K27ac_ENCFF044JNJ.bed.narrowPeak"), as = "GRanges")
+ENCODE_H3K27me3 = ChIPseeker::readPeakFile(paste0(datadir, "/H3K27me3_ENCFF000BXB.bed.broadPeak"), as = "GRanges")
+```
+
 ```{r}
 # Get peak set names for ENCODE ChIP peak comparison for the appropriate epigenetic mark
 ## H3K27ac 
@@ -9913,7 +10245,7 @@ encodeOL$OL.prop.of.ENCODE <- ifelse(encodeOL$Group == "ENCODE H3K27ac", (encode
 encodeOL
 ```
 
-```{r, fig.width=9, fig.height=6, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+```{r, fig.width=9, fig.height=9, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
 plotdata = encodeOL
 colnames(plotdata)[12] <- "Precision (%)"
 colnames(plotdata)[13] <- "Recall (%)"
@@ -9923,7 +10255,7 @@ plotdata = pivot_longer(plotdata, cols=c("Precision (%)","Recall (%)"))
 ggplot(plotdata, aes(x=Sample, y=value, fill=Set)) +
   geom_bar(stat="identity", position=position_dodge2(width=0.9)) +
   theme_bw(base_size = 25) +
-  scale_fill_viridis(name = "Peak Caller",
+  scale_fill_viridis(name = "",
                        discrete = TRUE, begin = 0.65, end = 0.9,
                        option = "plasma", alpha = 0.85) +
   # ylim(0,100) + xlim(0,100) +
@@ -9940,22 +10272,17 @@ ggplot(plotdata, aes(x=Sample, y=value, fill=Set)) +
   theme(legend.key.height = unit(0.7, "cm")) +
   theme(legend.key.size = unit(1, "cm")) +
    guides(color = guide_legend(override.aes = list(size = 6))) + 
-  facet_grid(~name, scales="free_y", space="free_y") 
+  facet_grid(name~Caller, scales="free_y") 
 
 # save plot
-# ggsave(path = paste0(workdir,"/TSA"),
-#         filename = paste0("precision_recall_MACS2.svg"),
-#         dpi = 1200, width = 9.5,
-#         height = 6.0, units ="in")
+ggsave(path = paste0(workdir,"/TSA"),
+        filename = paste0("precision_recall.svg"),
+        dpi = 1200, width = 9.5,
+        height = 7.2, units ="in")
 ```
 
 
-```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
-# load ENCODE ChIP peaks
-datadir="/Volumes/pu1918/projects/neurogenomics-lab/live/Projects/CUTnTag-benchmarking-analysis/resources/ENCODE/peaks/"
-ENCODE_H3K27ac = ChIPseeker::readPeakFile(paste0(datadir, "/H3K27ac_ENCFF044JNJ.bed.narrowPeak"), as = "GRanges")
-ENCODE_H3K27me3 = ChIPseeker::readPeakFile(paste0(datadir, "/H3K27me3_ENCFF000BXB.bed.broadPeak"), as = "GRanges")
-```
+
 
 ## FRiP scores
 ```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
@@ -10049,7 +10376,8 @@ ENCODE_H3K27me3 = ChIPseeker::readPeakFile(paste0(datadir, "/H3K27me3_ENCFF000BX
 ```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 # Plot fragment in peak proportions
 # inPeakData_df <- read.csv(paste0(workdir,"/alignment/frip/inpeak_fragment_counts.csv"), row.names = 1)
-inPeakData_df <- read.csv(paste0(workdir,"/TSA/inpeak_fragment_counts_tsa.csv"), row.names = 1)
+# inPeakData_df <- read.csv(paste0(workdir,"/TSA/inpeak_fragment_counts_tsa.csv"), row.names = 1)
+inPeakData_df <- read.csv(paste0(workdir,"/TSA/inpeak_fragment_counts_tsa_subv2.csv"), row.names = 1)
 
 # rename
 inPeakData_df$group[inPeakData_df$group == "sample"] <- "Sample Peaks"
@@ -10059,6 +10387,8 @@ inPeakData_df$group[inPeakData_df$group == "encode"] <- "H3K27ac ENCODE"
 readcount=read.table(paste0(workdir,"/TSA/fragment_counts.tsv"))
 colnames(readcount) = c("bamSample","ReadCount")
 readcount$FragCount = readcount$ReadCount/2
+# edit: change bamfile values from 'sub' to 'noTSA'
+readcount$bamSample <- gsub("sub","noTSA",readcount$bamSample)
 
 # add fragment count data
 inPeakData_df <- merge(readcount, inPeakData_df, by="bamSample")
@@ -10068,21 +10398,30 @@ inPeakData_df$compareCount <- inPeakData_df$FragCount
 # calculate frip score
 inPeakData_df$frip = inPeakData_df$inPeakN / inPeakData_df$compareCount * 100
 
-inPeakData_df$Set <- str_extract(inPeakData_df$bamSample, "TSA|sub")
-inPeakData_df$SampleLabel <- substr(inPeakData_df$bamSample, 1, nchar(inPeakData_df$bamSample)-4)
+inPeakData_df$Set <- str_extract(inPeakData_df$bamSample, "TSA|noTSA")
+# inPeakData_df$SampleLabel <- substr(inPeakData_df$bamSample, 1, nchar(inPeakData_df$bamSample)-4)
+inPeakData_df$SampleLabel <- gsub("_TSA|_noTSA","",inPeakData_df$bamSample)
 inPeakData_df$group <- factor(inPeakData_df$group, c("Sample Peaks", "H3K27ac ENCODE"))
 ```
 
-``` {r, fig.width=10, fig.height=8, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+``` {r, fig.width=10, fig.height=7, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+inPeakData_df$Caller <- str_extract(inPeakData_df$PeakSet, "MACS2|SEACR|ENCODE")
+# rename
+inPeakData_df$Set[inPeakData_df$Set == "TSA"] <- "+ TSA"
+inPeakData_df$Set[inPeakData_df$Set == "noTSA"] <- "- TSA"
+
 ggplot(inPeakData_df, aes(SampleLabel, frip, fill=Set)) +
   geom_bar(aes(fill = Set), width = 0.7, position = position_dodge(width = 0.75), 
-           stat = "identity", alpha = 0.6, colour="black") +
-  theme_bw(base_size = 25) + 
+           stat = "identity") +
+  theme_bw(base_size = 25) +
+  scale_fill_viridis(name = "",
+                       discrete = TRUE, begin = 0.65, end = 0.9,
+                       option = "plasma", alpha = 0.85) +
   theme(plot.margin = unit(c(0.5, 0.5, 0.5, 1), "cm")) +
   ylim(0, 40) +
   ylab("% of fragments in peaks") +
   xlab("") +
-  ggtitle("CUT&Tag fragments in ENCODE and sample peaks") +
+  # ggtitle("CUT&Tag fragments in ENCODE and sample peaks") +
   theme(axis.text = element_text(size = 18)) +
   theme(axis.title = element_text(size = 20)) +
   theme(plot.title = element_text(size = 25)) +
@@ -10093,16 +10432,824 @@ ggplot(inPeakData_df, aes(SampleLabel, frip, fill=Set)) +
   theme(
       strip.background=element_rect(colour="grey40",fill="grey80"),
       strip.text = element_text(colour = 'black')) +
-  # scale_fill_manual(values = c("skyblue","steelblue")) +
-    # scale_fill_manual(values = c("#ff8d99","#d82f3a")) +
-    scale_fill_manual(name=NULL, values = c("violet","purple4")) +
-  facet_wrap(~group, scales="free_x", ncol=4, nrow=1, strip.position = "top")
+  facet_wrap(~Caller, scales="free_x", ncol=4, nrow=1, strip.position = "top")
 
-# # save plot
-# ggsave(path = paste0(workdir,"/TSA"),
-#         filename = paste0("frips_sample_encode.svg"),
-#         dpi = 1200, width = 9.5,
-#         height = 7.0, units ="in")
+# save plot
+ggsave(path = paste0(workdir,"/TSA"),
+        filename = paste0("frips_sample_encode.svg"),
+        dpi = 1200, width = 9.0,
+        height = 6.0, units ="in")
+```
+
+
+# PCR cycles and column/SDS
+## Full size
+```{r, fig.height=3, fig.width=6}
+path="/Volumes/pu1918/projects/mrc_bdr/ephemeral/cutandtag/pcr_cycle/"
+
+files = list.files(path,"_rmDup.txt") %>% .[!grepl("Diagenode_C15410196_1_100", .)]
+dfOut = c()
+for (file in files) {
+  # Define path and file
+  file_path <- paste0(path, file)
+  
+  # Read the entire file as text to inspect its structure
+  raw_data <- readLines(file_path)
+  
+  # Find the start and end of the duplication metrics section
+  start_line <- grep("^LIBRARY", raw_data)
+  end_line <- grep("^## HISTOGRAM", raw_data)
+  
+  # Extract only the duplication metrics lines
+  duplication_data <- raw_data[start_line:(end_line - 1)]
+  
+  # Read the duplication metrics into a dataframe
+  picard_data <- read.table(text = duplication_data, header = TRUE, sep = "\t")
+  
+  # Extract the READ_PAIRS_EXAMINED value
+  paired_reads_examined <- picard_data$READ_PAIRS_EXAMINED
+  # Extract the PERCENT_DUPLICATION value
+  percent_duplication <- picard_data$PERCENT_DUPLICATION
+  # Extract the READ_PAIR_DUPLICATES value
+  read_pair_duplicates <- picard_data$READ_PAIR_DUPLICATES
+  
+  sample=str_split(file,"_")[[1]][1]
+  size="Full"
+  cycle=sub(".*_(\\d+)PCR.*", "\\1", file)
+  group=str_extract(file,"SDS|column")
+  df = data.frame(sample, size, cycle, group, paired_reads_examined, percent_duplication, read_pair_duplicates)
+  dfOut = rbind(dfOut,df)
+}
+
+dfOut$percent_duplication <- dfOut$percent_duplication *100
+dfOut$cycle[!(dfOut$cycle %in% c(11,13))] = 15
+dfOut$group[is.na(dfOut$group)] = "SDS"
+dfOut$sample[dfOut$sample %in% c("Diagenode")] = "Diagenode 1:50"
+dfOut$sample[dfOut$sample %in% c("Active")] = "Active Motif"
+dfOut$sample[dfOut$sample %in% c("CST9733")] = "H3K27me3"
+
+# rename groups
+# dfOut$group[dfOut$group == "Henikoff"] = "SDS"
+dfOut$group[dfOut$group == "column"] = "Column"
+
+ggplot(dfOut, aes(x=cycle, y=percent_duplication, colour=sample, group=sample)) + 
+  geom_line(size=0.7) + geom_point(size=1.2) +
+  facet_grid(~group) +
+  scale_color_viridis(name = "",
+                       discrete = TRUE, begin = 0.1, end = 0.85,
+                       option = "plasma", alpha = 0.75) + 
+  theme_bw() +
+  xlab("PCR Cycles") + ylab("Duplication Rate (%)") +
+  theme(legend.position="right") +
+  guides(color = guide_legend(ncol = 1))
+
+# save data
+savedf = data.frame(sample=dfOut$sample,
+                    cycle=dfOut$cycle,
+                    group=dfOut$group,
+                    percent_duplication=dfOut$percent_duplication)
+write.csv(savedf, paste0(workdir,"/pcr_cycles/duplication_rate.csv"), quote=TRUE,row.names=FALSE)
+```
+
+```{r}
+# Unique fragments
+dfOut$UniqueFragment = dfOut$paired_reads_examined - dfOut$read_pair_duplicates
+dfOut$label = paste0(dfOut$cycle," PCR + ", dfOut$group)
+
+dfOut$name = "UniqueFragments"
+ggplot(dfOut, aes(x=sample, y=UniqueFragment, fill=label)) + 
+  geom_bar(stat = "identity", position = position_dodge(width=0.87), width = 0.8) +
+  # Format y-axis to scientific notation
+  scale_y_continuous(labels = scientific) +
+  scale_fill_viridis(name = "",
+                       discrete = TRUE, begin = 0.1, end = 0.85,
+                       option = "plasma", alpha = 0.75) + 
+  theme_bw() +
+  xlab("") + ylab("") +
+  theme(legend.position="bottom") +
+  theme(axis.text.x=element_text(angle=45, hjust = 1)) +
+  guides(fill = guide_legend(nrow = 2))  +
+  facet_wrap(~name, strip.position="right")
+
+# save data 
+savedf = data.frame(sample=dfOut$sample,
+                    label=dfOut$label,
+                    UniqueFragment=dfOut$UniqueFragment)
+write.csv(savedf, paste0(workdir,"/pcr_cycles/uniquefragments.csv"), quote=TRUE,row.names=FALSE)
+```
+
+```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE, fig.width=5, fig.height=10}
+# hg19 blacklisted regions
+hg19_blacklist = ChIPseeker::readPeakFile(paste0(workdir,"/resources/hg19/hg19-blacklist.v2.bed.gz"), as = "GRanges")
+
+# read in peak files
+path="/Volumes/pu1918/projects/mrc_bdr/ephemeral/cutandtag/peakCalling/"
+files = list.files(path,".bed") %>% .[!grepl("Diagenode_C15410196_1_100", .)]
+
+par_blacklist_counts = c()
+par_peakList = list()
+par_peakList_unfilt = list()
+par_callInfo = list()
+
+for (file in files) {
+        
+        peakfile = paste0(path,file)
+        # read in peak regions
+        peak_unfilt = ChIPseeker::readPeakFile(peakfile, as = "GRanges")
+        # store all peaks in a list
+        par_peakList_unfilt = c(par_peakList_unfilt, peak_unfilt)
+        # count peaks in blacklist regions
+        blacklist_count = length(IRanges::subsetByOverlaps(peak_unfilt, hg19_blacklist))
+        # store peaks in blacklist regions
+        par_blacklist_counts = c(par_blacklist_counts, blacklist_count)
+        # filter out peaks in blacklist regions and irregular chromosomes
+        peak_filt = IRanges::subsetByOverlaps(peak_unfilt, hg19_blacklist, invert = TRUE) %>% BRGenomics::tidyChromosomes(keep.X = TRUE, keep.Y = TRUE)
+        # store filtered peak list
+        par_peakList = c(par_peakList, peak_filt)
+
+}
+
+# name peak lists
+names(par_peakList) = files
+names(par_peakList_unfilt) = files
+names(par_blacklist_counts) = files
+```
+
+
+```{r}
+# Count number of peaks per set
+Total_CT_peaks = c()
+for(i in 1:length(par_peakList)){ Total_CT_peaks = c(Total_CT_peaks, length(par_peakList[[i]])) }
+names(Total_CT_peaks) <- files
+
+data.frame(Total_CT_peaks)
+```
+
+```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE, fig.width=35, fig.height=10}
+
+# split peak set information and plot bar plot
+par_df=data.frame(Total_CT_peaks)
+par_df$PeakSet = rownames(par_df)
+par_df$sample <- str_extract(par_df$PeakSet, "^[A-Za-z]+(-?[A-Za-z0-9]+)?")
+par_df$size <- "Full"
+par_df$cycle <- sub(".*_(\\d+)PCR.*", "\\1", par_df$PeakSet)
+par_df$cycle[!(par_df$cycle %in% c(11,13))] = 15
+par_df$group <- str_extract(par_df$PeakSet,"SDS|column")
+par_df$group[is.na(par_df$group)] = "SDS"
+par_df$sample[par_df$sample %in% c("Diagenode")] = "Diagenode 1:50"
+
+# rename groups
+# par_df$group[par_df$group == "Henikoff"] = "SDS"
+par_df$group[par_df$group == "column"] = "Column"
+
+# Epigenetic mark
+par_df$EpMark = "H3K27ac"
+par_df$EpMark[par_df$sample %in% c("CST9733")] = "H3K27me3"
+```
+
+```{r}
+# load ENCODE ChIP peaks
+datadir="/Volumes/pu1918/projects/neurogenomics-lab/live/Projects/CUTnTag-benchmarking-analysis/resources/ENCODE/peaks/"
+ENCODE_H3K27ac = ChIPseeker::readPeakFile(paste0(datadir, "/H3K27ac_ENCFF044JNJ.bed.narrowPeak"), as = "GRanges")
+ENCODE_H3K27me3 = ChIPseeker::readPeakFile(paste0(datadir, "/H3K27me3_ENCFF000BXB.bed.broadPeak"), as = "GRanges")
+
+# Get peak set names for ENCODE ChIP peak comparison for the appropriate epigenetic mark
+## H3K27ac 
+h3k27ac_setNames = par_df %>% dplyr::filter(EpMark == "H3K27ac") %>% pull(PeakSet) %>% unique() %>% sort
+## H3K27me3 
+h3k27me3_setNames = par_df %>% dplyr::filter(EpMark == "H3K27me3") %>% pull(PeakSet) %>% unique() %>% sort
+
+# List of all called peak sets
+peakTest <- c(par_peakList)
+H3K27ac_peakList = peakTest[h3k27ac_setNames]
+H3K27me3_peakList = peakTest[h3k27me3_setNames]
+
+
+# find peak set overlaps
+count_ct_overlaps = function(peak_list, reference){
+  
+  sample_peaks_in_ref = c()
+  for(i in 1:length(peak_list)){
+    ct_overlaps_count = GenomicRanges::countOverlaps(query = peak_list[[i]], subject = reference)
+    sample_in_reference = ct_overlaps_count[ct_overlaps_count != 0] %>% length()
+    sample_peaks_in_ref = c(sample_peaks_in_ref, sample_in_reference)
+  }
+  return(sample_peaks_in_ref)
+}
+
+# find encode overlaps
+count_encode_overlaps = function(peak_list, reference){
+  
+  ref_in_sample_peaks = c()
+  for(i in 1:length(peak_list)){
+    enc_overlaps_count = GenomicRanges::countOverlaps(query = reference, subject = peak_list[[i]])
+    reference_in_sample = enc_overlaps_count[enc_overlaps_count != 0] %>% length()
+    ref_in_sample_peaks = c(ref_in_sample_peaks, reference_in_sample)
+  }
+  return(ref_in_sample_peaks)
+}
+# count CT peaks overlapping ENCODE peaks
+ct_peaks_h3k27ac = count_ct_overlaps(H3K27ac_peakList, ENCODE_H3K27ac) # ENCODE_H3K27ac loaded previously
+ct_peaks_h3k27me3 = count_ct_overlaps(H3K27me3_peakList, ENCODE_H3K27me3) # ENCODE_H3K27me3 loaded previously
+# count ENCODE peaks overlapping ENCODE peaks
+enc_peaks_h3k27ac = count_encode_overlaps(H3K27ac_peakList, ENCODE_H3K27ac) # ENCODE_H3K27ac loaded previously
+enc_peaks_h3k27me3 = count_encode_overlaps(H3K27me3_peakList, ENCODE_H3K27me3) # ENCODE_H3K27me3 loaded previously
+
+# combine
+encodeOL <- rbind( data.frame(PeakSet=names(H3K27ac_peakList), ol.CTPeakCount=ct_peaks_h3k27ac, ol.ENCODEPeakCount=enc_peaks_h3k27ac, Group="ENCODE H3K27ac"),
+                   data.frame(PeakSet=names(H3K27me3_peakList), ol.CTPeakCount=ct_peaks_h3k27me3, ol.ENCODEPeakCount=enc_peaks_h3k27me3,Group="ENCODE H3K27me3")
+                   )
+
+# add peak set information
+encodeOL = merge(encodeOL, par_df, by="PeakSet")
+# calculate proportion of overlapping CT peaks relative to total CT peaks
+encodeOL$OL.prop.of.CT <- (encodeOL$ol.CTPeakCount)*100 / encodeOL$Total_CT_peaks
+# count ENCODE peak proportion
+encode_AC = NROW(ENCODE_H3K27ac)
+encode_ME = NROW(ENCODE_H3K27me3)
+# calculate proportion of union relative to all ENCODE peaks
+encodeOL$OL.prop.of.ENCODE <- ifelse(encodeOL$Group == "ENCODE H3K27ac", (encodeOL$ol.ENCODEPeakCount)*100 / encode_AC,
+                                  ifelse(encodeOL$Group == "ENCODE H3K27me3", (encodeOL$ol.ENCODEPeakCount)*100 / encode_ME, NA))
+encodeOL
+```
+
+
+```{r, fig.width=10, fig.height=6}
+
+plotdata = pivot_longer(encodeOL, cols=c("OL.prop.of.CT","OL.prop.of.ENCODE"))
+plotdata$label = paste0(plotdata$cycle," PCR + ", plotdata$group)
+plotdata$name[plotdata$name %in% c("OL.prop.of.CT")] ="Precision (%)"
+plotdata$name[plotdata$name %in% c("OL.prop.of.ENCODE")] ="Recall (%)"
+
+plotdata$sample[plotdata$sample %in% c("Diagenode")] = "Diagenode 1:50"
+plotdata$sample[plotdata$sample %in% c("Active")] = "Active Motif"
+plotdata$sample[plotdata$sample %in% c("CST9733")] = "H3K27me3"
+
+ggplot(plotdata, aes(x=sample, y=value, fill=label)) + 
+  geom_bar(stat = "identity", position = position_dodge(width=0.87), width = 0.8) +
+  scale_fill_viridis(name = "",
+                       discrete = TRUE, begin = 0.1, end = 0.85,
+                       option = "plasma", alpha = 0.75) + 
+  theme_bw() +
+  xlab("") + ylab("") + ggtitle("") +
+  theme(legend.position="none") +
+  guides(fill = guide_legend(nrow = 2)) +
+  theme(axis.text.x=element_text(angle=45, hjust = 1)) +
+  facet_wrap(~name, nrow = 2, strip.position = "right", scales="free_y")
+
+# save data 
+savedf = data.frame(sample=plotdata$sample,
+                    label=plotdata$label,
+                    metric=plotdata$name,
+                    value=plotdata$value)
+write.csv(savedf, paste0(workdir,"/pcr_cycles/precision_recall.csv"), quote=TRUE,row.names=FALSE)
+
+```
+
+## Downsample 2.6M
+```{r, fig.height=4, fig.width=6}
+path="/Volumes/pu1918/projects/neurogenomics-lab/live/Projects/CUT_n_TAG/CUTnTag_analysis/PCR_cycle_tests/picard_summary/"
+
+files = list.files(path,"2.6M_picard.rmDup.txt")
+dfOut = c()
+for (file in files) {
+  # Define path and file
+  file_path <- paste0(path, file)
+  
+  # Read the entire file as text to inspect its structure
+  raw_data <- readLines(file_path)
+  
+  # Find the start and end of the duplication metrics section
+  start_line <- grep("^LIBRARY", raw_data)
+  end_line <- grep("^## HISTOGRAM", raw_data)
+  
+  # Extract only the duplication metrics lines
+  duplication_data <- raw_data[start_line:(end_line - 1)]
+  
+  # Read the duplication metrics into a dataframe
+  picard_data <- read.table(text = duplication_data, header = TRUE, sep = "\t")
+  
+  # Extract the READ_PAIRS_EXAMINED value
+  paired_reads_examined <- picard_data$READ_PAIRS_EXAMINED
+  # Extract the PERCENT_DUPLICATION value
+  percent_duplication <- picard_data$PERCENT_DUPLICATION
+  # Extract the READ_PAIR_DUPLICATES value
+  read_pair_duplicates <- picard_data$READ_PAIR_DUPLICATES
+  
+  sample=str_split(file,"_")[[1]][1]
+  size="2.6M"
+  cycle=sub(".*_(\\d+)PCR.*", "\\1", file)
+  group=str_extract(file,"AM|Henikoff")
+  df = data.frame(sample, size, cycle, group, paired_reads_examined, percent_duplication, read_pair_duplicates)
+  dfOut = rbind(dfOut,df)
+}
+
+dfOut$percent_duplication <- dfOut$percent_duplication *100
+dfOut$cycle[!(dfOut$cycle %in% c(11,13))] = 15
+dfOut$group[is.na(dfOut$group)] = "Henikoff"
+dfOut$sample[dfOut$sample %in% c("Diagenode")] = "Diagenode 1:50"
+
+# rename groups
+dfOut$group[dfOut$group == "Henikoff"] = "SDS"
+dfOut$group[dfOut$group == "AM"] = "Column"
+
+ggplot(dfOut, aes(x=cycle, y=percent_duplication, colour=sample, group=sample)) + 
+  geom_line(size=0.7) + geom_point(size=1.2) +
+  facet_grid(~group) +
+  scale_color_viridis(name = "",
+                       discrete = TRUE, begin = 0.1, end = 0.85,
+                       option = "plasma", alpha = 0.75) + 
+  theme_bw() +
+  xlab("PCR Cycles") + ylab("Duplication Rate (%)") +
+  theme(legend.position="bottom") +
+  guides(color = guide_legend(nrow = 2))
+
+# save data
+savedf = data.frame(sample=dfOut$sample,
+                    cycle=dfOut$cycle,
+                    group=dfOut$group,
+                    percent_duplication=dfOut$percent_duplication)
+write.csv(savedf, paste0(workdir,"/pcr_cycles/duplication_rate_2.6M_downsample.csv"), quote=TRUE,row.names=FALSE)
+```
+
+```{r}
+# Unique fragments
+dfOut$UniqueFragment = dfOut$paired_reads_examined - dfOut$read_pair_duplicates
+dfOut$label = paste0(dfOut$cycle," PCR + ", dfOut$group)
+
+
+ggplot(dfOut, aes(x=sample, y=UniqueFragment, fill=label)) + 
+  geom_bar(stat = "identity", position = position_dodge(width=0.85), width = 0.8) +
+  # Format y-axis to scientific notation
+  scale_y_continuous(labels = scientific) +
+  scale_fill_viridis(name = "",
+                       discrete = TRUE, begin = 0.1, end = 0.85,
+                       option = "plasma", alpha = 0.75) + 
+  theme_bw() +
+  xlab("") + ylab("") + ggtitle("Unique Fragments") +
+  theme(legend.position="bottom") +
+  guides(color = guide_legend(nrow = 2)) +
+  theme(axis.text.x=element_text(angle=45, hjust = 1))
+
+# save data 
+savedf = data.frame(sample=dfOut$sample,
+                    label=dfOut$label,
+                    UniqueFragment=dfOut$UniqueFragment)
+write.csv(savedf, paste0(workdir,"/pcr_cycles/uniquefragments_2.6M_downsample.csv"), quote=TRUE,row.names=FALSE)
+```
+
+```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE, fig.width=5, fig.height=10}
+# hg19 blacklisted regions
+hg19_blacklist = ChIPseeker::readPeakFile(paste0(workdir,"/resources/hg19/hg19-blacklist.v2.bed.gz"), as = "GRanges")
+
+# read in peak files
+path="/Volumes/pu1918/projects/neurogenomics-lab/live/Projects/CUT_n_TAG/CUTnTag_analysis/PCR_cycle_tests/peaks/"
+files = list.files(path,".bed")
+
+par_blacklist_counts = c()
+par_peakList = list()
+par_peakList_unfilt = list()
+par_callInfo = list()
+
+for (file in files) {
+        
+        peakfile = paste0(path,file)
+        # read in peak regions
+        peak_unfilt = ChIPseeker::readPeakFile(peakfile, as = "GRanges")
+        # store all peaks in a list
+        par_peakList_unfilt = c(par_peakList_unfilt, peak_unfilt)
+        # count peaks in blacklist regions
+        blacklist_count = length(IRanges::subsetByOverlaps(peak_unfilt, hg19_blacklist))
+        # store peaks in blacklist regions
+        par_blacklist_counts = c(par_blacklist_counts, blacklist_count)
+        # filter out peaks in blacklist regions and irregular chromosomes
+        peak_filt = IRanges::subsetByOverlaps(peak_unfilt, hg19_blacklist, invert = TRUE) %>% BRGenomics::tidyChromosomes(keep.X = TRUE, keep.Y = TRUE)
+        # store filtered peak list
+        par_peakList = c(par_peakList, peak_filt)
+
+}
+
+# name peak lists
+names(par_peakList) = files
+names(par_peakList_unfilt) = files
+names(par_blacklist_counts) = files
+```
+
+
+```{r}
+# Count number of peaks per set
+Total_CT_peaks = c()
+for(i in 1:length(par_peakList)){ Total_CT_peaks = c(Total_CT_peaks, length(par_peakList[[i]])) }
+names(Total_CT_peaks) <- files
+
+data.frame(Total_CT_peaks)
+```
+
+```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE, fig.width=35, fig.height=10}
+
+# split peak set information and plot bar plot
+par_df=data.frame(Total_CT_peaks)
+par_df$PeakSet = rownames(par_df)
+par_df$sample <- str_extract(par_df$PeakSet, "^[A-Za-z]+(-?[A-Za-z0-9]+)?")
+par_df$size <- "2.6M"
+par_df$cycle <- sub(".*_(\\d+)PCR.*", "\\1", par_df$PeakSet)
+par_df$cycle[!(par_df$cycle %in% c(11,13))] = 15
+par_df$group <- str_extract(par_df$PeakSet,"AM|Henikoff")
+par_df$group[is.na(par_df$group)] = "Henikoff"
+par_df$sample[par_df$sample %in% c("Diagenode")] = "Diagenode 1:50"
+
+# rename groups
+par_df$group[par_df$group == "Henikoff"] = "SDS"
+par_df$group[par_df$group == "AM"] = "Column"
+
+# Epigenetic mark
+par_df$EpMark = "H3K27ac"
+par_df$EpMark[par_df$sample %in% c("H3K27me3")] = "H3K27me3"
+```
+
+```{r}
+# load ENCODE ChIP peaks
+datadir="/Volumes/pu1918/projects/neurogenomics-lab/live/Projects/CUTnTag-benchmarking-analysis/resources/ENCODE/peaks/"
+ENCODE_H3K27ac = ChIPseeker::readPeakFile(paste0(datadir, "/H3K27ac_ENCFF044JNJ.bed.narrowPeak"), as = "GRanges")
+ENCODE_H3K27me3 = ChIPseeker::readPeakFile(paste0(datadir, "/H3K27me3_ENCFF000BXB.bed.broadPeak"), as = "GRanges")
+
+# Get peak set names for ENCODE ChIP peak comparison for the appropriate epigenetic mark
+## H3K27ac 
+h3k27ac_setNames = par_df %>% dplyr::filter(EpMark == "H3K27ac") %>% pull(PeakSet) %>% unique() %>% sort
+## H3K27me3 
+h3k27me3_setNames = par_df %>% dplyr::filter(EpMark == "H3K27me3") %>% pull(PeakSet) %>% unique() %>% sort
+
+# List of all called peak sets
+peakTest <- c(par_peakList)
+H3K27ac_peakList = peakTest[h3k27ac_setNames]
+H3K27me3_peakList = peakTest[h3k27me3_setNames]
+
+
+# find peak set overlaps
+count_ct_overlaps = function(peak_list, reference){
+  
+  sample_peaks_in_ref = c()
+  for(i in 1:length(peak_list)){
+    ct_overlaps_count = GenomicRanges::countOverlaps(query = peak_list[[i]], subject = reference)
+    sample_in_reference = ct_overlaps_count[ct_overlaps_count != 0] %>% length()
+    sample_peaks_in_ref = c(sample_peaks_in_ref, sample_in_reference)
+  }
+  return(sample_peaks_in_ref)
+}
+
+# find encode overlaps
+count_encode_overlaps = function(peak_list, reference){
+  
+  ref_in_sample_peaks = c()
+  for(i in 1:length(peak_list)){
+    enc_overlaps_count = GenomicRanges::countOverlaps(query = reference, subject = peak_list[[i]])
+    reference_in_sample = enc_overlaps_count[enc_overlaps_count != 0] %>% length()
+    ref_in_sample_peaks = c(ref_in_sample_peaks, reference_in_sample)
+  }
+  return(ref_in_sample_peaks)
+}
+# count CT peaks overlapping ENCODE peaks
+ct_peaks_h3k27ac = count_ct_overlaps(H3K27ac_peakList, ENCODE_H3K27ac) # ENCODE_H3K27ac loaded previously
+ct_peaks_h3k27me3 = count_ct_overlaps(H3K27me3_peakList, ENCODE_H3K27me3) # ENCODE_H3K27me3 loaded previously
+# count ENCODE peaks overlapping ENCODE peaks
+enc_peaks_h3k27ac = count_encode_overlaps(H3K27ac_peakList, ENCODE_H3K27ac) # ENCODE_H3K27ac loaded previously
+enc_peaks_h3k27me3 = count_encode_overlaps(H3K27me3_peakList, ENCODE_H3K27me3) # ENCODE_H3K27me3 loaded previously
+
+# combine
+encodeOL <- rbind( data.frame(PeakSet=names(H3K27ac_peakList), ol.CTPeakCount=ct_peaks_h3k27ac, ol.ENCODEPeakCount=enc_peaks_h3k27ac, Group="ENCODE H3K27ac"),
+                   data.frame(PeakSet=names(H3K27me3_peakList), ol.CTPeakCount=ct_peaks_h3k27me3, ol.ENCODEPeakCount=enc_peaks_h3k27me3,Group="ENCODE H3K27me3")
+                   )
+
+# add peak set information
+encodeOL = merge(encodeOL, par_df, by="PeakSet")
+# calculate proportion of overlapping CT peaks relative to total CT peaks
+encodeOL$OL.prop.of.CT <- (encodeOL$ol.CTPeakCount)*100 / encodeOL$Total_CT_peaks
+# count ENCODE peak proportion
+encode_AC = NROW(ENCODE_H3K27ac)
+encode_ME = NROW(ENCODE_H3K27me3)
+# calculate proportion of union relative to all ENCODE peaks
+encodeOL$OL.prop.of.ENCODE <- ifelse(encodeOL$Group == "ENCODE H3K27ac", (encodeOL$ol.ENCODEPeakCount)*100 / encode_AC,
+                                  ifelse(encodeOL$Group == "ENCODE H3K27me3", (encodeOL$ol.ENCODEPeakCount)*100 / encode_ME, NA))
+encodeOL
+```
+
+
+```{r, fig.width=10, fig.height=6}
+
+plotdata = pivot_longer(encodeOL, cols=c("OL.prop.of.CT","OL.prop.of.ENCODE"))
+plotdata$label = paste0(plotdata$cycle," PCR + ", plotdata$group)
+plotdata$name[plotdata$name %in% c("OL.prop.of.CT")] ="Precision (%)"
+plotdata$name[plotdata$name %in% c("OL.prop.of.ENCODE")] ="Recall (%)"
+
+ggplot(plotdata, aes(x=sample, y=value, fill=label)) + 
+  geom_bar(stat = "identity", position = position_dodge(width=0.85), width = 0.8) +
+  scale_fill_viridis(name = "",
+                       discrete = TRUE, begin = 0.1, end = 0.85,
+                       option = "plasma", alpha = 0.75) + 
+  theme_bw() +
+  xlab("") + ylab("") + ggtitle("") +
+  theme(legend.position="bottom") +
+  guides(fill = guide_legend(nrow = 2)) +
+  theme(axis.text.x=element_text(angle=45, hjust = 1)) +
+  facet_wrap(~name, nrow = 2, strip.position = "right", scales="free_y")
+
+# save data 
+savedf = data.frame(sample=plotdata$sample,
+                    label=plotdata$label,
+                    metric=plotdata$name,
+                    value=plotdata$value)
+write.csv(savedf, paste0(workdir,"/pcr_cycles/precision_recall_2.6M_downsample.csv"), quote=TRUE,row.names=FALSE)
+
+```
+
+# qPCR
+```{r}
+file="/Users/k23139900/Documents/PhD/projects/cutandtag_benchmarking/manuscript/qPCR/H3K27ac_qPCR.csv"
+data=read.csv(file)
+
+data$Antibody = factor(data$Antibody, levels=c("Abcam-ab4729","Diagenode","Abcam-ab177178","Active Motif"))
+data$Concentration = factor(data$Concentration, levels=c("1:50","1:100","1:200"))
+data$Gene = factor(data$Gene, levels=c("ARHGAP22","COX4I2", "MTHFR", "ZMYND8","KLHL11", "SIGIRR" ))
+
+pal <- brewer.pal(11, "PRGn")
+ggplot(data, aes(x=Concentration, y=DD_Ct, fill=Gene, group=Gene)) +
+  geom_bar(stat = "identity", position="dodge2") +
+  geom_errorbar(aes(ymin = DD_Ct - DD_SD, ymax = DD_Ct + DD_SD), width=0.5, position = position_dodge(0.9)) +
+  theme_bw() +
+  ylim(0,120) +
+  scale_fill_manual(values=pal[c(8:11,3,2)]) +
+  xlab("Dilution") +
+  facet_wrap(. ~ Antibody, nrow = 2) +
+  theme(strip.text.x = element_text(size = 10)) +
+  theme(axis.text = element_text(size = 10)) +
+  theme(axis.title.x=element_blank(),
+        axis.title.y=element_blank()) +
+  theme(legend.position="bottom") +
+  guides(fill = guide_legend(col = 2)) 
+```
+
+```{r}
+file="/Users/k23139900/Documents/PhD/projects/cutandtag_benchmarking/manuscript/qPCR/H3K27ac_NaB_qPCR.csv"
+data=read.csv(file)
+
+data$Label = paste0(data$Antibody," (",data$Concentration,")")
+data$Label = factor(data$Label, levels=c("Diagenode (1:50)","Diagenode (1:100)","Abcam-ab4729 (1:100)"))
+data$Gene = factor(data$Gene, levels=c("ARHGAP22","COX4I2", "MTHFR", "ZMYND8","KLHL11", "SIGIRR" ))
+data$NaB[data$NaB == 0] = "- NaB"
+data$NaB[data$NaB == 1] = "+ NaB"
+data$NaB = factor(data$NaB, levels=c("- NaB","+ NaB" ))
+
+pal <- brewer.pal(11, "PRGn")
+ggplot(data, aes(x=NaB, y=DD_Ct, fill=Gene, group=Gene)) +
+  geom_bar(stat = "identity", position="dodge2") +
+  geom_errorbar(aes(ymin = DD_Ct - DD_SD, ymax = DD_Ct + DD_SD), width=0.5, position = position_dodge(0.9)) +
+  theme_bw() +
+  ylim(0,120) +
+  scale_fill_manual(values=pal[c(8:11,3,2)]) +
+  xlab("") +
+  facet_wrap(. ~ Label, nrow = 2, scales="free_x") +
+  theme(strip.text.x = element_text(size = 10)) +
+  theme(axis.text = element_text(size = 10)) +
+  theme(axis.title.x=element_blank(),
+        axis.title.y=element_blank()) +
+  theme(legend.position="right") +
+  guides(fill = guide_legend(col = 2)) 
+```
+
+# HCT116 H3K27me3
+```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE, fig.width=5, fig.height=10}
+# read in peak files
+# h3k27ac_sampleList = read.delim(paste0(workdir, "/sampleinfo/h3k27ac_sample.csv"),header=FALSE)[[1]]
+# h3k27me3_sampleList = read.delim(paste0(workdir, "/sampleinfo/h3k27me3_sample.csv"),header=FALSE)[[1]]
+# h3k27ac_sampleList=c("ab177", "ab4729", "diag")
+# h3k27me3_sampleList=c("ab9733")
+# sampleList = c(h3k27ac_sampleList, h3k27me3_sampleList)
+# sampleList = c(h3k27ac_sampleList)
+sampleList=c("SRR16963158")
+h3k27me3_setNames=c("SRR16963158")
+
+peakpath="/Volumes/pu1918/projects/mrc_bdr/ephemeral/cutandtag/HCT116"
+
+# hg19 blacklisted regions
+hg19_blacklist = ChIPseeker::readPeakFile(paste0(workdir,"/resources/hg19/hg19-blacklist.v2.bed.gz"), as = "GRanges")
+
+set="individual" # opts: allsample, newsample, individual
+callerdir=c("SEACR","MACS2")
+# callerdir="MACS2"
+# dupList = c("rmDup","withDup")
+dupList="rmDup"
+# threshold_list = list(
+#   MACS2 = c("1e-6", "3e-6", "5e-6", "1e-5", "3e-5", "5e-5", "1e-4", "3e-4" ,"5e-4",
+#             "0.001", "0.003", "0.005" ,"0.01" ,"0.03" ,"0.05" ,"0.1", "0.3", "0.5"),
+#   SEACR = c("0.01", "0.02", "0.03", "0.04", "0.05", "0.06", "0.07", "0.08", "0.09", 
+#             "0.1", "0.11", "0.12", "0.13", "0.14", "0.15"))
+threshold_list = list(MACS2 = c("q1e-5_peaks.narrowPeak","q1e-5_peaks.broadPeak"), 
+                      SEACR = c("0.01","0.1"))
+
+par_blacklist_counts = c()
+par_peakList = list()
+par_peakList_unfilt = list()
+par_callInfo = list()
+
+for (dup in dupList) {
+  for (sample in sampleList) {
+    # for MACS2, define narrow or broad peak setting
+    # if (sample %in% h3k27me3_sampleList) { setting = "broad"
+    #                                       epmark = "H3K27me3"} 
+    # if (sample %in% h3k27ac_sampleList) { setting = "narrow"
+    #                                       epmark = "H3K27ac"} 
+    epmark="H3K27me3"
+    
+      for (caller in callerdir) {
+        ## define which threshold list to use based on peak calling tool
+        thresholdList = threshold_list[[caller]]
+        
+        for (threshold in thresholdList) {
+        # for peak caller, define the peak file name suffix
+        if (caller == "SEACR") { suffix=paste0(set,"_seacr_top",threshold,"_peaks.stringent.bed") }
+        if (caller == "MACS2") { suffix=paste0(threshold) }
+        # check
+          peakfile=paste0(peakpath,"/peakCalling/",caller,"/", sample,"_",dup,"_", suffix)
+          print(peakfile)
+        
+        # read in peak regions
+        peak_unfilt = ChIPseeker::readPeakFile(peakfile, as = "GRanges")
+       
+        # store all peaks in a list
+        par_peakList_unfilt = c(par_peakList_unfilt, peak_unfilt)
+        # count peaks in blacklist regions
+        blacklist_count = length(IRanges::subsetByOverlaps(peak_unfilt, hg19_blacklist))
+        # store peaks in blacklist regions
+        par_blacklist_counts = c(par_blacklist_counts, blacklist_count)
+        # filter out peaks in blacklist regions and irregular chromosomes
+        peak_filt = IRanges::subsetByOverlaps(peak_unfilt, hg19_blacklist, invert = TRUE) %>% BRGenomics::tidyChromosomes(keep.X = TRUE, keep.Y = TRUE)
+        # store filtered peak list
+        par_peakList = c(par_peakList, peak_filt)
+        # store peak calling information
+        par_callInfo = c(par_callInfo, paste0(epmark,"_",sample,"_",caller,"_",dup,"_",threshold))
+        
+        }
+  }
+    
+}
+}
+
+# name peak lists
+names(par_peakList) = par_callInfo
+names(par_peakList_unfilt) = par_callInfo
+names(par_blacklist_counts) = par_callInfo
+```
+
+## Peak counts
+```{r}
+# Count number of peaks per set
+Total_CT_peaks = c()
+for(i in 1:length(par_peakList)){ Total_CT_peaks = c(Total_CT_peaks, length(par_peakList[[i]])) }
+names(Total_CT_peaks) <- par_callInfo
+
+data.frame(Total_CT_peaks)
+```
+
+```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE, fig.width=10, fig.height=10}
+# split peak set information and plot bar plot
+par_df=data.frame(Total_CT_peaks)
+par_df$PeakSet = rownames(par_df)
+par_df$EpMark <- str_split_fixed(par_df$PeakSet, "_", n=4)[,1]
+par_df$Sample <- str_split_fixed(par_df$PeakSet, "_", n=5)[,2]
+par_df$Caller <- str_split_fixed(par_df$PeakSet, "_", n=5)[,3]
+par_df$Dup <- str_split_fixed(par_df$PeakSet, "_", n=5)[,4]
+par_df$Threshold <- str_extract(par_df$PeakSet, "0.1|0.01|q1e-5_peaks.narrowPeak|q1e-5_peaks.broadPeak")
+# par_df$SampleLabel <- paste0(thd_df$EpMark, "-", thd_df$Sample)
+par_df$Label[par_df$Caller == "SEACR" & par_df$Threshold == 0.01] = "SEACR stringent 0.01"
+par_df$Label[par_df$Caller == "SEACR" & par_df$Threshold == 0.1] = "SEACR stringent 0.1"
+par_df$Label[par_df$Caller == "MACS2" & par_df$Threshold == "q1e-5_peaks.narrowPeak"] = "MACS2 narrow q1e-5"
+par_df$Label[par_df$Caller == "MACS2" & par_df$Threshold == "q1e-5_peaks.broadPeak"] = "MACS2 broad q1e-5"
+
+# add sample label from prior table
+# par_df <- merge(par_df, alignDupSummary, by="Sample")
+par_df$SampleLabel <- par_df$Sample
+
+options(scipen=999)
+par_df$Threshold <- par_df$Threshold %>% as.numeric() %>% as.factor
+
+PeakN_plot = ggplot(par_df, aes(Label, Total_CT_peaks, fill=Dup)) +
+  geom_bar(aes(fill = Dup), width = 0.7, position = "dodge", stat = "identity", alpha=0.6) + 
+  scale_fill_manual(name=NULL, values = c("violet","purple4")) +
+  theme_light(base_size=30) + 
+  ggtitle("Number of peaks") +
+  xlab("Threshold") +
+  ylab("") +
+  theme(axis.text.x = element_text(
+    # angle = 45, 
+    hjust = 0.5)) +
+  theme(axis.text = element_text(size = 20)) +
+  theme(axis.title = element_text(size = 25)) +
+  theme(plot.title = element_text(size = 35, face="bold")) +
+  theme(legend.text = element_text(size = 25)) +
+  theme(legend.title = element_blank()) +
+  theme(legend.position = "bottom") +
+  theme(strip.background =element_rect(fill="grey60"))+
+  scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +
+  ylim(0, max(par_df$Total_CT_peaks)+1000) + coord_flip()
+
+PeakN_plot
+```
+
+## Precision-Recall 
+```{r, warning=FALSE}
+# load HCT116 ENCODE peaks:
+datadir="/Volumes/pu1918/projects/mrc_bdr/ephemeral/cutandtag/HCT116"
+ENCODE_H3K27me3 = ChIPseeker::readPeakFile(paste0(datadir, "/ENCFF255ARD.bed"), as = "GRanges")
+
+# Get peak set names for ENCODE ChIP peak comparison for the appropriate epigenetic mark
+## H3K27ac 
+h3k27ac_setNames = par_df %>% dplyr::filter(EpMark == "H3K27ac") %>% pull(PeakSet) %>% unique() %>% sort
+## H3K27me3 
+h3k27me3_setNames = par_df %>% dplyr::filter(EpMark == "H3K27me3") %>% pull(PeakSet) %>% unique() %>% sort
+
+# List of all called peak sets
+peakTest <- c(par_peakList)
+# H3K27ac_peakList = peakTest[h3k27ac_setNames]
+H3K27me3_peakList = peakTest[h3k27me3_setNames]
+
+
+# find peak set overlaps
+count_ct_overlaps = function(peak_list, reference){
+  
+  sample_peaks_in_ref = c()
+  for(i in 1:length(peak_list)){
+    ct_overlaps_count = GenomicRanges::countOverlaps(query = peak_list[[i]], subject = reference)
+    sample_in_reference = ct_overlaps_count[ct_overlaps_count != 0] %>% length()
+    sample_peaks_in_ref = c(sample_peaks_in_ref, sample_in_reference)
+  }
+  return(sample_peaks_in_ref)
+}
+
+# find encode overlaps
+count_encode_overlaps = function(peak_list, reference){
+  
+  ref_in_sample_peaks = c()
+  for(i in 1:length(peak_list)){
+    enc_overlaps_count = GenomicRanges::countOverlaps(query = reference, subject = peak_list[[i]])
+    reference_in_sample = enc_overlaps_count[enc_overlaps_count != 0] %>% length()
+    ref_in_sample_peaks = c(ref_in_sample_peaks, reference_in_sample)
+  }
+  return(ref_in_sample_peaks)
+}
+# count CT peaks overlapping ENCODE peaks
+# ct_peaks_h3k27ac = count_ct_overlaps(H3K27ac_peakList, ENCODE_H3K27ac) # ENCODE_H3K27ac loaded previously
+ct_peaks_h3k27me3 = count_ct_overlaps(H3K27me3_peakList, ENCODE_H3K27me3) # ENCODE_H3K27me3 loaded previously
+# count ENCODE peaks overlapping ENCODE peaks
+# enc_peaks_h3k27ac = count_encode_overlaps(H3K27ac_peakList, ENCODE_H3K27ac) # ENCODE_H3K27ac loaded previously
+enc_peaks_h3k27me3 = count_encode_overlaps(H3K27me3_peakList, ENCODE_H3K27me3) # ENCODE_H3K27me3 loaded previously
+
+# combine
+encodeOL <- rbind( 
+  # data.frame(PeakSet=names(H3K27ac_peakList), ol.CTPeakCount=ct_peaks_h3k27ac, 
+                              # ol.ENCODEPeakCount=enc_peaks_h3k27ac, Group="ENCODE H3K27ac")
+                   # ,
+                   data.frame(PeakSet=names(H3K27me3_peakList), ol.CTPeakCount=ct_peaks_h3k27me3,
+                              ol.ENCODEPeakCount=enc_peaks_h3k27me3,Group="ENCODE H3K27me3")
+                   )
+
+# add peak set information
+encodeOL = merge(encodeOL, par_df, by="PeakSet")
+# calculate proportion of overlapping CT peaks relative to total CT peaks
+encodeOL$OL.prop.of.CT <- (encodeOL$ol.CTPeakCount)*100 / encodeOL$Total_CT_peaks
+# count ENCODE peak proportion
+# encode_AC = NROW(ENCODE_H3K27ac)
+encode_ME = NROW(ENCODE_H3K27me3)
+# calculate proportion of union relative to all ENCODE peaks
+encodeOL$OL.prop.of.ENCODE <- 
+  # ifelse(encodeOL$Group == "ENCODE H3K27ac", (encodeOL$ol.ENCODEPeakCount)*100 / encode_AC,
+                                  ifelse(encodeOL$Group == "ENCODE H3K27me3", (encodeOL$ol.ENCODEPeakCount)*100 / encode_ME, NA)
+# )
+encodeOL
+```
+
+```{r, fig.width=4, fig.height=4, warning=FALSE}
+
+plotdata = encodeOL
+p1 <- ggplot(plotdata, aes(x=OL.prop.of.ENCODE, y=OL.prop.of.CT, colour=Label)) + 
+  geom_point(size = 2) + geom_point(alpha = 0.6) + 
+  scale_size_discrete(range = c(2, 5), name = "q value") +
+  theme_bw(base_size = 12) +
+  scale_colour_viridis(name = "", 
+                       discrete = TRUE, begin = 0.1, end = 0.85,
+                       option = "plasma", alpha = 0.9) +
+  ylim(40,100) + xlim(0,60) +
+  ggtitle("HCT116 H3K27me3 CUT&Tag:\nPrecision and Recall vs ENCODE Peaks") +
+  ylab("Precision (% of CUT&Tag Peaks)") +
+  xlab("Recall (% of ENCODE Peaks)") + 
+  theme(legend.position="bottom") +
+  guides(colour = guide_legend(nrow = 2))
+p1
+
+# save data
+savedf = data.frame(PeakSource=plotdata$Label,
+                    Precision_Overlap.percent.of.CT=plotdata$OL.prop.of.CT,
+                    Recall_Overlap.percent.of.ENCODE=plotdata$OL.prop.of.ENCODE)
+write.csv(savedf, paste0(workdir,"/encode_overlap/precision_recall_curve_hct116.csv"), quote=FALSE,row.names=FALSE)
 ```
 
 # Session info 
